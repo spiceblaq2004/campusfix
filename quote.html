@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Instant Quote - CampusFix UENR</title>
+  <link rel="stylesheet" href="assets/css/style.min.css">
+</head>
+<body class="dark">
+  <!-- Same nav as index.html -->
+  <div class="container">
+    <section class="quote-section">
+      <h1>Get Your Repair Quote in Seconds</h1>
+      <form id="quoteForm">
+        <div class="form-grid">
+          <select id="phoneBrand" required>
+            <option value="">Select Brand</option>
+            <option value="iPhone">iPhone</option>
+            <option value="Samsung">Samsung</option>
+            <option value="Other">Other Android</option>
+          </select>
+          <select id="repairType" required>
+            <option value="">Select Repair</option>
+            <option value="Screen">Screen Replacement</option>
+            <option value="Battery">Battery Replacement</option>
+            <!-- Add all -->
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-large">Get Quote</button>
+      </form>
+
+      <div id="quoteResult" class="quote-result hidden">
+        <h2>Estimated Cost: <span id="estimatedCost"></span></h2>
+        <p>Time: <span id="estimatedTime"></span></p>
+        <a href="/order.html" class="btn btn-primary">Place Order Now</a>
+      </div>
+    </section>
+  </div>
+  <script src="assets/js/quote.min.js"></script>
+</body>
+</html>
