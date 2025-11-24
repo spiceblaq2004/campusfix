@@ -7,35 +7,58 @@
   <link rel="stylesheet" href="assets/css/style.min.css">
 </head>
 <body class="dark">
-  <!-- Same nav as index.html -->
+  <!-- Same navbar as index.html -->
   <div class="container">
-    <section class="quote-section">
+    <section class="quote-calculator">
       <h1>Get Your Repair Quote in Seconds</h1>
+      <p class="subtitle">No commitment • Instant results</p>
+
       <form id="quoteForm">
         <div class="form-grid">
-          <select id="phoneBrand" required>
-            <option value="">Select Brand</option>
-            <option value="iPhone">iPhone</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Other">Other Android</option>
-          </select>
-          <select id="repairType" required>
-            <option value="">Select Repair</option>
-            <option value="Screen">Screen Replacement</option>
-            <option value="Battery">Battery Replacement</option>
-            <!-- Add all -->
-          </select>
+          <div class="form-group">
+            <label>Phone Brand *</label>
+            <select id="phoneBrand" required>
+              <option value="">Choose brand</option>
+              <option value="iPhone">iPhone</option>
+              <option value="Samsung">Samsung</option>
+              <option value="Other">Other Android</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Repair Type *</label>
+            <select id="repairType" required>
+              <option value="">Choose repair</option>
+              <option value="Screen">Screen Replacement</option>
+              <option value="Battery">Battery Replacement</option>
+              <option value="Charging">Charging Port</option>
+              <option value="Water">Water Damage</option>
+              <option value="Camera">Camera Repair</option>
+              <option value="Software">Software Issues</option>
+            </select>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-large">Get Quote</button>
+        <button type="submit" class="btn btn-primary btn-large">
+          Get My Quote
+        </button>
       </form>
 
       <div id="quoteResult" class="quote-result hidden">
-        <h2>Estimated Cost: <span id="estimatedCost"></span></h2>
-        <p>Time: <span id="estimatedTime"></span></p>
-        <a href="/order.html" class="btn btn-primary">Place Order Now</a>
+        <div class="result-card">
+          <h2>Estimated Cost</h2>
+          <div class="price" id="estimatedCost"></div>
+          <div class="time" id="estimatedTime"></div>
+          <div class="includes">
+            <p>Includes: Free pickup • 6 months warranty • Quality parts</p>
+          </div>
+          <div class="actions">
+            <a href="order.html" class="btn btn-primary">Place Order Now</a>
+            <a href="https://wa.me/233246912468" class="btn btn-outline">Chat on WhatsApp</a>
+          </div>
+        </div>
       </div>
     </section>
   </div>
+
   <script src="assets/js/quote.min.js"></script>
 </body>
 </html>
