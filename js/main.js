@@ -16,46 +16,63 @@ class CampusFixApp {
     }
 
     setupNavigation() {
-    // Mobile menu toggle
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    const navLinks = document.querySelectorAll('.nav-link');
+        // Mobile menu toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        const navLinks = document.querySelectorAll('.nav-link');
 
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            navToggle.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open
-            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                navToggle.classList.toggle('active');
+                
+                // Prevent body scroll when menu is open
+                document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+            });
+        }
+
+        // Close mobile menu when clicking links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    // Close mobile menu
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        navToggle.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                    
+                    // Smooth scroll to section
+                    targetSection.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Add active class with animation
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    link.classList.add('active');
+                }
+            });
         });
-    }
 
-    // Close mobile menu when clicking links
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (navMenu.classList.contains('active')) {
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navMenu && navMenu.classList.contains('active') && 
+                !navMenu.contains(e.target) && 
+                !navToggle.contains(e.target)) {
                 navMenu.classList.remove('active');
                 navToggle.classList.remove('active');
                 document.body.style.overflow = '';
             }
         });
-    });
 
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (navMenu && navMenu.classList.contains('active') && 
-            !navMenu.contains(e.target) && 
-            !navToggle.contains(e.target)) {
-            navMenu.classList.remove('active');
-            navToggle.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
-
-    // Active navigation based on scroll position
-    this.setupActiveNavigation();
-}
+        // Active navigation based on scroll position
+        this.setupActiveNavigation();
+    }
 
     setupActiveNavigation() {
         const sections = document.querySelectorAll('section');
