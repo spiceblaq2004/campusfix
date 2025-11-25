@@ -21,12 +21,12 @@ class CampusFixSystems {
     }
 
     initializeSystems() {
-        // Add safety checks for all DOM elements
         this.safeExecute(() => this.setupQuoteCalculator(), 'Quote Calculator');
         this.safeExecute(() => this.setupBookingSystem(), 'Booking System');
         this.safeExecute(() => this.setupStatusChecker(), 'Status Checker');
         this.safeExecute(() => this.setupNotifications(), 'Notifications');
         this.safeExecute(() => this.setupAnalytics(), 'Analytics');
+        this.safeExecute(() => this.setupFeedbackSystem(), 'Feedback System');
     }
 
     safeExecute(fn, systemName) {
@@ -51,11 +51,12 @@ class CampusFixSystems {
                 e.preventDefault();
                 this.calculateQuote();
             });
-        } else {
-            console.error('❌ Calculate button not found!');
+            
+            // Initialize button state
+            this.updateQuoteButtonState();
         }
 
-        // Also add change listeners to form fields
+        // Add change listeners to form fields
         const brandSelect = document.getElementById('calcBrand');
         const repairSelect = document.getElementById('calcRepair');
         
@@ -73,9 +74,11 @@ class CampusFixSystems {
     }
 
     updateQuoteButtonState() {
-        const brand = document.getElementById('calcBrand').value;
-        const repair = document.getElementById('calcRepair').value;
+        const brand = document.getElementById('calcBrand')?.value;
+        const repair = document.getElementById('calcRepair')?.value;
         const calculateBtn = document.getElementById('calculateQuote');
+        
+        if (!calculateBtn) return;
         
         if (brand && repair) {
             calculateBtn.disabled = false;
@@ -89,8 +92,8 @@ class CampusFixSystems {
     calculateQuote() {
         console.log('🧮 Calculating quote...');
         
-        const brand = document.getElementById('calcBrand').value;
-        const repair = document.getElementById('calcRepair').value;
+        const brand = document.getElementById('calcBrand')?.value;
+        const repair = document.getElementById('calcRepair')?.value;
         
         console.log('📱 Selected:', { brand, repair });
         
@@ -107,15 +110,21 @@ class CampusFixSystems {
 
         // Simulate calculation delay
         setTimeout(() => {
-            const quote = this.getQuotePrice(brand, repair);
-            this.displayQuote(quote);
-            
-            // Restore button
-            calculateBtn.innerHTML = originalText;
-            calculateBtn.disabled = false;
-            
-            // Track quote calculation
-            this.trackEvent('quote_calculated', `${brand}_${repair}`);
+            try {
+                const quote = this.getQuotePrice(brand, repair);
+                this.displayQuote(quote);
+                
+                // Track quote calculation
+                this.trackEvent('quote_calculated', `${brand}_${repair}`);
+            } catch (error) {
+                console.error('Quote calculation error:', error);
+                this.showNotification('Error calculating quote. Please try again.', 'error');
+            } finally {
+                // Restore button
+                calculateBtn.innerHTML = originalText;
+                calculateBtn.disabled = false;
+                this.updateQuoteButtonState();
+            }
         }, 800);
     }
 
@@ -147,26 +156,18 @@ class CampusFixSystems {
             }
         };
 
-        // Map repair types to keys
-        const repairMap = {
-            'screen': 'screen',
-            'battery': 'battery', 
-            'charging': 'charging',
-            'camera': 'camera',
-            'water': 'water',
-            'software': 'software'
-        };
-
-        const repairKey = repairMap[repair] || 'screen';
-        const price = priceMatrix[brand]?.[repairKey] || { min: 100, max: 200, time: '2-4 hours' };
-        const averagePrice = Math.round((price.min + price.max) / 2);
+        const repairKey = repair;
+        const brandData = priceMatrix[brand];
         
-        console.log('💰 Calculated price:', price);
+        if (!brandData) {
+            return { min: 100, max: 200, time: '2-4 hours', brand, repair };
+        }
+
+        const price = brandData[repairKey] || { min: 100, max: 200, time: '2-4 hours' };
         
         return {
             min: price.min,
             max: price.max,
-            average: averagePrice,
             time: price.time,
             brand: brand,
             repair: repair
@@ -193,7 +194,8 @@ class CampusFixSystems {
         // Update WhatsApp link with quote info
         const whatsappBtn = resultDiv.querySelector('a.btn');
         if (whatsappBtn) {
-            const message = `Hello! I'd like a quote for:\n• ${quote.brand} ${quote.repair} repair\n• Estimated: GH₵ ${quote.min}-${quote.max}\n• Time: ${quote.time}\n\nPlease provide exact pricing.`;
+            const repairName = this.getRepairDisplayName(quote.repair);
+            const message = `Hello! I'd like a quote for:\n• ${quote.brand} ${repairName} repair\n• Estimated: GH₵ ${quote.min}-${quote.max}\n• Time: ${quote.time}\n\nPlease provide exact pricing.`;
             whatsappBtn.href = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
         }
         
@@ -215,246 +217,75 @@ class CampusFixSystems {
         console.log('✅ Quote displayed successfully');
     }
 
-    // ================================
-    // BOOKING SYSTEM
-    // ================================
-
-    setupBookingSystem() {
-        const bookingForm = document.getElementById('bookingForm');
-        console.log('🔧 Setting up booking system...', bookingForm);
-        
-        if (bookingForm) {
-            bookingForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.handleBookingSubmission();
-            });
-        }
-    }
-
-    handleBookingSubmission() {
-        const formData = this.getBookingFormData();
-        
-        if (!this.validateBookingForm(formData)) {
-            this.showNotification('Please fill in all required fields', 'error');
-            return;
-        }
-
-        // Add loading state to button
-        const submitBtn = document.querySelector('#bookingForm button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
-        submitBtn.disabled = true;
-
-        // Simulate processing delay
-        setTimeout(() => {
-            // Generate booking confirmation
-            const bookingCode = this.generateBookingCode();
-            const booking = this.createBooking(bookingCode, formData);
-            
-            // Save to localStorage
-            this.saveBooking(booking);
-            
-            // Show success and open WhatsApp
-            this.showBookingSuccess(booking);
-            
-            // Track booking
-            this.trackEvent('booking_created', formData.device);
-            
-            // Restore button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }, 1000);
-    }
-
-    getBookingFormData() {
-        return {
-            name: document.getElementById('bookingName').value.trim(),
-            phone: document.getElementById('bookingPhone').value.trim(),
-            hostel: document.getElementById('bookingHostel').value.trim(),
-            device: document.getElementById('bookingDevice').value.trim(),
-            issue: document.getElementById('bookingIssue').value.trim(),
-            urgency: document.getElementById('bookingUrgency').value
+    getRepairDisplayName(repair) {
+        const names = {
+            'screen': 'Screen',
+            'battery': 'Battery',
+            'charging': 'Charging Port',
+            'camera': 'Camera',
+            'water': 'Water Damage',
+            'software': 'Software'
         };
-    }
-
-    validateBookingForm(data) {
-        const errors = [];
-        
-        if (!data.name) errors.push('Name is required');
-        if (!data.phone) errors.push('Phone number is required');
-        if (!data.hostel) errors.push('Hostel information is required');
-        if (!data.device) errors.push('Device model is required');
-        if (!data.issue) errors.push('Issue description is required');
-        
-        if (errors.length > 0) {
-            this.showNotification(errors.join(', '), 'error');
-            return false;
-        }
-        
-        return true;
-    }
-
-    generateBookingCode() {
-        const counter = parseInt(localStorage.getItem('bookingCounter') || '0') + 1;
-        localStorage.setItem('bookingCounter', counter.toString());
-        return `CF-${new Date().getFullYear()}-${counter.toString().padStart(4, '0')}`;
-    }
-
-    createBooking(code, data) {
-        return {
-            code: code,
-            ...data,
-            status: 'pending',
-            progress: 10,
-            createdAt: new Date().toISOString(),
-            steps: {
-                received: new Date().toLocaleTimeString(),
-                diagnosis: 'Pending',
-                repair: 'Pending',
-                quality: 'Pending',
-                ready: 'Pending'
-            }
-        };
-    }
-
-    saveBooking(booking) {
-        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
-        bookings[booking.code] = booking;
-        localStorage.setItem('campusFixBookings', JSON.stringify(bookings));
-        console.log('💾 Booking saved:', booking.code);
-    }
-
-    showBookingSuccess(booking) {
-        const message = `📱 *New Repair Booking - CampusFix UENR*\n\n` +
-                       `🆔 *Booking Code:* ${booking.code}\n` +
-                       `👤 *Name:* ${booking.name}\n` +
-                       `📞 *Phone:* ${booking.phone}\n` +
-                       `🏠 *Hostel:* ${booking.hostel}\n` +
-                       `📱 *Device:* ${booking.device}\n` +
-                       `🔧 *Issue:* ${booking.issue}\n` +
-                       `⚡ *Urgency:* ${booking.urgency}\n\n` +
-                       `*I'll contact you within 30 minutes to arrange pickup!*`;
-        
-        const whatsappUrl = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
-        
-        this.showNotification('✅ Booking created! Opening WhatsApp to send details...', 'success');
-        
-        // Clear form
-        document.getElementById('bookingForm').reset();
+        return names[repair] || repair;
     }
 
     // ================================
-    // STATUS CHECKER SYSTEM
+    // CUSTOMER FEEDBACK SYSTEM
     // ================================
 
-    setupStatusChecker() {
-        const checkBtn = document.getElementById('checkStatus');
-        console.log('🔧 Setting up status checker...', checkBtn);
+    setupFeedbackSystem() {
+        console.log('🔧 Setting up feedback system...');
         
-        if (checkBtn) {
-            checkBtn.addEventListener('click', () => {
-                this.checkRepairStatus();
-            });
-        }
-
-        // Enter key support
-        const statusInput = document.getElementById('statusCode');
-        if (statusInput) {
-            statusInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.checkRepairStatus();
-                }
-            });
-        }
-    }
-
-    checkRepairStatus() {
-        const code = document.getElementById('statusCode').value.trim().toUpperCase();
+        // Add feedback button to status results
+        this.injectFeedbackButton();
         
-        if (!code) {
-            this.showNotification('Please enter a repair code', 'error');
-            return;
-        }
-
-        // Add loading state
-        const checkBtn = document.getElementById('checkStatus');
-        const originalText = checkBtn.innerHTML;
-        checkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
-        checkBtn.disabled = true;
-
-        // Simulate API call delay
-        setTimeout(() => {
-            const status = this.getRepairStatus(code);
-            this.displayStatus(status, code);
-            
-            // Restore button
-            checkBtn.innerHTML = originalText;
-            checkBtn.disabled = false;
-            
-            // Track status check
-            this.trackEvent('status_checked', code);
-        }, 800);
+        // Load existing feedback
+        this.displayFeedbackStats();
     }
 
-    getRepairStatus(code) {
-        // Check for demo codes first
-        const demoStatus = this.getDemoStatus(code);
-        if (demoStatus) return demoStatus;
+    injectFeedbackButton() {
+        // This will be called when status results are displayed
+        // We'll modify the displayStatus method to include feedback
+    }
 
-        // Check actual bookings
-        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
-        const booking = bookings[code];
+    addFeedbackToStatus(statusCode, feedback) {
+        const feedbacks = JSON.parse(localStorage.getItem('campusFixFeedback') || '{}');
         
-        if (booking) {
-            return {
-                exists: true,
-                code: code,
-                status: booking.status,
-                progress: booking.progress,
-                device: booking.device,
-                steps: booking.steps,
-                isDemo: false
-            };
+        if (!feedbacks[statusCode]) {
+            feedbacks[statusCode] = [];
         }
-
-        return { exists: false, code: code };
+        
+        feedbacks[statusCode].push({
+            ...feedback,
+            timestamp: new Date().toISOString(),
+            id: Date.now().toString()
+        });
+        
+        localStorage.setItem('campusFixFeedback', JSON.stringify(feedbacks));
+        console.log('💾 Feedback saved for:', statusCode);
+        
+        // Update display
+        this.displayFeedbackStats();
     }
 
-    getDemoStatus(code) {
-        const demoData = {
-            'CF-2024-2581': {
-                exists: true,
-                status: 'In Progress',
-                progress: 60,
-                device: 'iPhone 13 Pro',
-                steps: {
-                    received: '10:30 AM',
-                    diagnosis: '11:15 AM',
-                    repair: 'In Progress',
-                    quality: 'Pending',
-                    ready: 'Pending'
-                },
-                isDemo: true
-            },
-            'CF-2024-1924': {
-                exists: true,
-                status: 'Completed',
-                progress: 100,
-                device: 'Samsung Galaxy S21',
-                steps: {
-                    received: '9:00 AM',
-                    diagnosis: '9:45 AM',
-                    repair: '10:30 AM',
-                    quality: '2:15 PM',
-                    ready: '3:00 PM'
-                },
-                isDemo: true
-            }
-        };
-
-        return demoData[code] || null;
+    displayFeedbackStats() {
+        const feedbacks = JSON.parse(localStorage.getItem('campusFixFeedback') || '{}');
+        const totalFeedbacks = Object.values(feedbacks).flat().length;
+        
+        console.log('📊 Feedback stats:', { totalFeedbacks });
+        
+        // You can display this in an admin panel later
+        return totalFeedbacks;
     }
+
+    getFeedbackForRepair(statusCode) {
+        const feedbacks = JSON.parse(localStorage.getItem('campusFixFeedback') || '{}');
+        return feedbacks[statusCode] || [];
+    }
+
+    // ================================
+    // ENHANCED STATUS CHECKER WITH FEEDBACK
+    // ================================
 
     displayStatus(status, code) {
         const resultDiv = document.getElementById('statusResult');
@@ -484,6 +315,7 @@ class CampusFixSystems {
 
         const statusClass = status.status.toLowerCase().replace(' ', '-');
         const progressPercent = status.progress + '%';
+        const feedbacks = this.getFeedbackForRepair(code);
 
         resultDiv.innerHTML = `
             <div class="status-card animate-scaleIn">
@@ -508,6 +340,60 @@ class CampusFixSystems {
                     ${this.generateTimelineHTML(status.steps)}
                 </div>
 
+                <!-- Feedback Section -->
+                <div class="feedback-section" style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgba(255,255,255,0.1);">
+                    <h4 style="margin-bottom: var(--space-md); text-align: center;">
+                        <i class="fas fa-comment-dots"></i> Repair Feedback
+                    </h4>
+                    
+                    ${status.status === 'Completed' ? `
+                        <div style="text-align: center; margin-bottom: var(--space-md);">
+                            <p style="color: var(--gray-400); margin-bottom: var(--space-md);">
+                                How was your repair experience?
+                            </p>
+                            <div class="feedback-actions" style="display: flex; gap: var(--space-sm); justify-content: center; flex-wrap: wrap;">
+                                <button class="btn btn-success feedback-btn" data-rating="5">
+                                    <i class="fas fa-star"></i> Excellent
+                                </button>
+                                <button class="btn btn-primary feedback-btn" data-rating="4">
+                                    <i class="fas fa-thumbs-up"></i> Good
+                                </button>
+                                <button class="btn btn-warning feedback-btn" data-rating="3">
+                                    <i class="fas fa-meh"></i> Average
+                                </button>
+                                <button class="btn btn-secondary feedback-btn" data-rating="2">
+                                    <i class="fas fa-frown"></i> Poor
+                                </button>
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="text-align: center;">
+                            <p style="color: var(--gray-400);">
+                                Feedback will be available when repair is completed
+                            </p>
+                        </div>
+                    `}
+                    
+                    ${feedbacks.length > 0 ? `
+                        <div class="previous-feedback" style="margin-top: var(--space-lg);">
+                            <h5 style="margin-bottom: var(--space-sm); text-align: center;">Your Previous Feedback</h5>
+                            ${feedbacks.map(fb => `
+                                <div style="background: rgba(255,255,255,0.05); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-sm);">
+                                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: var(--space-xs);">
+                                        <div style="display: flex; gap: var(--space-xs);">
+                                            ${this.generateStars(fb.rating)}
+                                        </div>
+                                        <small style="color: var(--gray-500);">
+                                            ${new Date(fb.timestamp).toLocaleDateString()}
+                                        </small>
+                                    </div>
+                                    ${fb.comment ? `<p style="color: var(--gray-300); margin: 0;">${fb.comment}</p>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+
                 <div style="margin-top: var(--space-xl); text-align: center;">
                     <a href="https://wa.me/233246912468" class="btn btn-primary hover-scale">
                         <i class="fab fa-whatsapp"></i> Contact Technician
@@ -515,36 +401,110 @@ class CampusFixSystems {
                 </div>
             </div>
         `;
+
+        // Add feedback button listeners
+        this.setupFeedbackButtons(code);
     }
 
-    generateTimelineHTML(steps) {
-        const stepConfig = [
-            { key: 'received', label: 'Received' },
-            { key: 'diagnosis', label: 'Diagnosis' },
-            { key: 'repair', label: 'Repair' },
-            { key: 'quality', label: 'Quality Check' },
-            { key: 'ready', label: 'Ready' }
-        ];
+    setupFeedbackButtons(statusCode) {
+        const feedbackBtns = document.querySelectorAll('.feedback-btn');
+        feedbackBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const rating = parseInt(btn.getAttribute('data-rating'));
+                this.showFeedbackForm(statusCode, rating);
+            });
+        });
+    }
 
-        return stepConfig.map((step, index) => {
-            const stepTime = steps[step.key];
-            const isCompleted = stepTime !== 'Pending' && stepTime !== 'In Progress';
-            const isCurrent = stepTime === 'In Progress';
-            
-            let markerClass = '';
-            if (isCompleted) markerClass = 'completed';
-            else if (isCurrent) markerClass = 'current';
-
-            return `
-                <div class="timeline-step">
-                    <div class="step-marker ${markerClass}"></div>
-                    <div class="step-content">
-                        <div class="step-label">${step.label}</div>
-                        <div class="step-time">${stepTime}</div>
+    showFeedbackForm(statusCode, rating) {
+        const formHTML = `
+            <div class="feedback-form-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: var(--space-md);">
+                <div class="feedback-form" style="background: var(--gray-800); padding: var(--space-2xl); border-radius: var(--radius-xl); max-width: 500px; width: 100%; border: 1px solid rgba(255,255,255,0.1);">
+                    <h3 style="margin-bottom: var(--space-lg); text-align: center;">
+                        <i class="fas fa-comment-dots"></i> Repair Feedback
+                    </h3>
+                    
+                    <div style="text-align: center; margin-bottom: var(--space-lg);">
+                        <div style="display: flex; justify-content: center; gap: var(--space-xs); margin-bottom: var(--space-md);">
+                            ${this.generateStars(rating)}
+                        </div>
+                        <p style="color: var(--gray-300);">
+                            ${this.getRatingText(rating)}
+                        </p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="feedbackComment">Additional Comments (Optional)</label>
+                        <textarea id="feedbackComment" placeholder="Tell us more about your experience..." style="width: 100%; min-height: 100px; padding: var(--space-md); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); color: var(--light); font-family: var(--font-family);"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: var(--space-md); margin-top: var(--space-xl);">
+                        <button type="button" class="btn btn-secondary" id="cancelFeedback" style="flex: 1;">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" id="submitFeedback" style="flex: 1;">
+                            Submit Feedback
+                        </button>
                     </div>
                 </div>
-            `;
-        }).join('');
+            </div>
+        `;
+
+        const formElement = document.createElement('div');
+        formElement.innerHTML = formHTML;
+        document.body.appendChild(formElement);
+
+        // Add event listeners
+        document.getElementById('cancelFeedback').addEventListener('click', () => {
+            formElement.remove();
+        });
+
+        document.getElementById('submitFeedback').addEventListener('click', () => {
+            const comment = document.getElementById('feedbackComment').value.trim();
+            this.submitFeedback(statusCode, rating, comment);
+            formElement.remove();
+            this.showNotification('Thank you for your feedback!', 'success');
+            
+            // Refresh status display to show the new feedback
+            setTimeout(() => {
+                this.checkRepairStatus();
+            }, 1000);
+        });
+    }
+
+    submitFeedback(statusCode, rating, comment = '') {
+        const feedback = {
+            rating,
+            comment,
+            statusCode,
+            timestamp: new Date().toISOString()
+        };
+
+        this.addFeedbackToStatus(statusCode, feedback);
+        this.trackEvent('feedback_submitted', `${statusCode}_${rating}`);
+    }
+
+    generateStars(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars += `<i class="fas fa-star" style="color: var(--accent);"></i>`;
+            } else {
+                stars += `<i class="far fa-star" style="color: var(--gray-500);"></i>`;
+            }
+        }
+        return stars;
+    }
+
+    getRatingText(rating) {
+        const texts = {
+            5: 'Excellent - Perfect service!',
+            4: 'Good - Great experience',
+            3: 'Average - OK service',
+            2: 'Poor - Needs improvement',
+            1: 'Terrible - Very dissatisfied'
+        };
+        return texts[rating] || 'Thanks for your feedback!';
     }
 
     // ================================
@@ -594,6 +554,12 @@ class CampusFixSystems {
                 .notification.warning {
                     background: var(--warning);
                 }
+                .feedback-btn {
+                    padding: var(--space-sm) var(--space-md);
+                    font-size: var(--text-sm);
+                }
+                .btn-success { background: var(--success); }
+                .btn-warning { background: var(--warning); color: var(--dark); }
             `;
             document.head.appendChild(styles);
         }
@@ -707,15 +673,57 @@ class CampusFixSystems {
             localStorage.setItem('trackingEvents', JSON.stringify([]));
         }
 
+        if (!localStorage.getItem('campusFixFeedback')) {
+            localStorage.setItem('campusFixFeedback', JSON.stringify({}));
+        }
+
         console.log('💾 Data systems initialized');
 
         return {
             bookings: JSON.parse(localStorage.getItem('campusFixBookings') || '{}'),
+            feedback: JSON.parse(localStorage.getItem('campusFixFeedback') || '{}'),
             analytics: {
                 pageViews: parseInt(localStorage.getItem('pageViews') || '0'),
                 firstVisit: localStorage.getItem('firstVisit')
             }
         };
+    }
+
+    // ================================
+    // ADMIN FEATURES - For Your Use
+    // ================================
+
+    getAdminStats() {
+        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+        const feedbacks = JSON.parse(localStorage.getItem('campusFixFeedback') || '{}');
+        const events = JSON.parse(localStorage.getItem('trackingEvents') || '[]');
+        
+        const stats = {
+            totalBookings: Object.keys(bookings).length,
+            totalFeedbacks: Object.values(feedbacks).flat().length,
+            totalPageViews: parseInt(localStorage.getItem('pageViews') || '0'),
+            totalEvents: events.length,
+            recentBookings: Object.values(bookings).slice(-5),
+            averageRating: this.calculateAverageRating(feedbacks)
+        };
+        
+        console.log('📊 Admin Stats:', stats);
+        return stats;
+    }
+
+    calculateAverageRating(feedbacks) {
+        const allFeedbacks = Object.values(feedbacks).flat();
+        if (allFeedbacks.length === 0) return 0;
+        
+        const total = allFeedbacks.reduce((sum, fb) => sum + fb.rating, 0);
+        return (total / allFeedbacks.length).toFixed(1);
+    }
+
+    // Method to view all feedback (for admin)
+    viewAllFeedback() {
+        const feedbacks = JSON.parse(localStorage.getItem('campusFixFeedback') || '{}');
+        console.log('📝 All Feedback:', feedbacks);
+        return feedbacks;
     }
 }
 
@@ -723,4 +731,8 @@ class CampusFixSystems {
 document.addEventListener('DOMContentLoaded', () => {
     window.campusFixSystems = new CampusFixSystems();
     console.log('🚀 CampusFix Systems Initialized');
+
+    // Add admin console commands for easy access
+    window.getCampusFixStats = () => window.campusFixSystems.getAdminStats();
+    window.viewAllFeedback = () => window.campusFixSystems.viewAllFeedback();
 });
