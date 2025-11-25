@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusFix UENR → Premium Phone Repair | 70% Cheaper | Same-Day Service</title>
     <meta name="description" content="UENR's premium student-run phone repair. 70% cheaper than town. Same-day repairs with free hostel pickup. Screen, battery & charging port fixes.">
-    <!-- Add this for better mobile experience -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#6366f1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Replace the styles section in head with this: -->
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/animations.css">
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Mobile Meta Tags -->
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
     <!-- Navigation -->
@@ -50,12 +50,11 @@
         </div>
     </nav>
 
- <!-- Hero Section -->
+    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-background">
             <div class="hero-bg-shape shape-1 animate-float"></div>
             <div class="hero-bg-shape shape-2 animate-float" style="animation-delay: 1s;"></div>
-            <div class="hero-bg-shape shape-3 animate-pulse" style="animation-delay: 2s;"></div>
         </div>
 
         <div class="container">
@@ -65,8 +64,10 @@
                     <span>UENR's #1 Premium Repair Service</span>
                 </div>
 
-                <h1 class="hero-title animate-typewriter">
-                    Phone <span class="text-gradient">Repairs</span> Made <span class="text-accent">Simple</span> & <span class="text-primary">Affordable</span>
+                <h1 class="hero-title">
+                    <span class="title-line">Phone <span class="text-gradient">Repairs</span></span>
+                    <span class="title-line">Made <span class="text-accent">Simple</span> &</span>
+                    <span class="title-line"><span class="text-primary">Affordable</span></span>
                 </h1>
 
                 <p class="hero-description animate-fadeInUp" style="animation-delay: 0.3s;">
@@ -234,7 +235,26 @@
                     <a href="https://wa.me/233246912468?text=Hello! I need battery replacement service" class="btn btn-primary hover-scale">Get Quote</a>
                 </div>
 
-                <!-- Add similar image sections to other service cards -->
+                <!-- Service Card 3 -->
+                <div class="service-card scroll-reveal hover-lift">
+                    <div class="service-image">
+                        <div class="image-placeholder animate-pulse" style="animation-delay: 0.4s;">
+                            <i class="fas fa-plug"></i>
+                        </div>
+                    </div>
+                    <div class="service-icon animate-bounceIn">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Charging Port</h3>
+                    <p>Fix charging issues with quality port replacements</p>
+                    <div class="service-price">GH₵70 - GH₵150</div>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Fast charging restored</li>
+                        <li><i class="fas fa-check"></i> Data transfer</li>
+                        <li><i class="fas fa-check"></i> 6 months warranty</li>
+                    </ul>
+                    <a href="https://wa.me/233246912468?text=Hello! I need charging port repair" class="btn btn-outline hover-scale">Get Quote</a>
+                </div>
             </div>
         </div>
     </section>
@@ -293,7 +313,8 @@
             </div>
         </div>
     </section>
-<!-- Quote Calculator Section -->
+
+    <!-- Quote Calculator Section -->
     <section id="quote" class="quote-section">
         <div class="container">
             <div class="section-header">
@@ -418,6 +439,7 @@
             </div>
         </div>
     </section>
+
     <!-- Testimonials Section -->
     <section id="testimonials" class="testimonials">
         <div class="container">
@@ -577,9 +599,8 @@
         </div>
     </footer>
 
-    <!-- Script -->
+    <!-- Scripts -->
     <script src="js/main.js"></script>
-    <!-- Systems Script -->
-<script src="js/systems.js"></script>
+    <script src="js/systems.js"></script>
 </body>
 </html>
