@@ -1,6 +1,7 @@
 // ================================
 // FRONTEND-ONLY SYSTEMS - FIXED
 // ================================
+
 class CampusFixSystems {
     constructor() {
         this.isInitialized = false;
@@ -35,25 +36,6 @@ class CampusFixSystems {
         } catch (error) {
             console.error(`❌ ${systemName} setup failed:`, error);
         }
-    }
-
-    // ... rest of your existing methods
-}
-
-class CampusFixSystems {
-    constructor() {
-        this.repairData = this.initializeRepairData();
-        this.initializeSystems();
-    }
-
-    initializeSystems() {
-        this.setupQuoteCalculator();
-        this.setupBookingSystem();
-        this.setupStatusChecker();
-        this.setupNotifications();
-        this.setupAnalytics();
-        
-        console.log('✅ All systems initialized');
     }
 
     // ================================
@@ -211,7 +193,7 @@ class CampusFixSystems {
         // Update WhatsApp link with quote info
         const whatsappBtn = resultDiv.querySelector('a.btn');
         if (whatsappBtn) {
-            const message = `Hello! I'd like a quote for:\n• ${quote.brand} ${quote.reair} repair\n• Estimated: GH₵ ${quote.min}-${quote.max}\n• Time: ${quote.time}\n\nPlease provide exact pricing.`;
+            const message = `Hello! I'd like a quote for:\n• ${quote.brand} ${quote.repair} repair\n• Estimated: GH₵ ${quote.min}-${quote.max}\n• Time: ${quote.time}\n\nPlease provide exact pricing.`;
             whatsappBtn.href = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
         }
         
