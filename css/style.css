@@ -863,3 +863,265 @@ h4 { font-size: var(--text-2xl); }
     gap: var(--space-md);
   }
 }
+/* ================================
+   ENHANCED RESPONSIVE FIXES
+   ================================ */
+
+@media (max-width: 1024px) {
+  .hero .container {
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+  
+  .hero-content {
+    text-align: center;
+    max-width: 100%;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-md);
+  }
+  
+  /* Fix mobile navigation */
+  .nav-menu {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: var(--dark);
+    flex-direction: column;
+    padding: var(--space-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    backdrop-filter: blur(20px);
+  }
+  
+  .nav-menu.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .nav-toggle {
+    display: flex;
+  }
+  
+  .nav-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .nav-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+  
+  /* Hero section fixes */
+  .hero {
+    padding-top: 100px;
+    text-align: center;
+  }
+  
+  .hero-title {
+    font-size: var(--text-4xl);
+  }
+  
+  .hero-description {
+    font-size: var(--text-lg);
+  }
+  
+  .hero-stats {
+    justify-content: center;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-features {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  /* Section fixes */
+  .section-title {
+    font-size: var(--text-4xl);
+  }
+  
+  .services-grid,
+  .process-steps,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .trust-badges {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Form fixes */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-box {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--space-sm);
+  }
+  
+  .hero-title {
+    font-size: var(--text-3xl);
+  }
+  
+  .section-title {
+    font-size: var(--text-3xl);
+  }
+  
+  .hero-stats {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  
+  .trust-badges {
+    grid-template-columns: 1fr;
+  }
+  
+  .phone-mockup {
+    width: 250px;
+    height: 500px;
+  }
+  
+  .service-card,
+  .testimonial-card,
+  .quote-calculator,
+  .booking-form {
+    padding: var(--space-lg);
+  }
+  
+  .btn {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--text-sm);
+  }
+  
+  .btn-large {
+    padding: var(--space-lg) var(--space-xl);
+  }
+  
+  /* Fix status timeline for mobile */
+  .status-timeline {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  
+  .status-timeline::before {
+    display: none;
+  }
+  
+  .timeline-step {
+    flex-direction: row;
+    gap: var(--space-md);
+    text-align: left;
+  }
+  
+  .step-content {
+    flex: 1;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .section-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .phone-mockup {
+    width: 200px;
+    height: 400px;
+  }
+  
+  .service-icon,
+  .trust-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+/* Fix for very tall screens */
+@media (max-height: 700px) and (orientation: landscape) {
+  .hero {
+    min-height: auto;
+    padding: 120px 0 var(--space-2xl);
+  }
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .hero {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Loading state improvements */
+.img-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Ensure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix for mobile viewport height */
+.mobile-height-fix {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Improve touch targets for mobile */
+@media (max-width: 768px) {
+  .btn,
+  .nav-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
