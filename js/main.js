@@ -302,7 +302,7 @@ class CampusFixApp {
         serviceButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const service = button.closest('.service-card').querySelector('h3').textContent;
-                this.trackEvent('service_click', service);
+                this.trackEvent('service_interest', service);
                 
                 // Add attention animation to parent card
                 const card = button.closest('.service-card');
