@@ -993,3 +993,64 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
+/* ================================
+   BOOKING FORM VALIDATION STYLES
+   ================================ */
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: var(--error) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.field-error {
+    color: var(--error) !important;
+    font-size: var(--text-sm) !important;
+    margin-top: var(--space-xs) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-xs) !important;
+}
+
+.field-error::before {
+    content: '⚠';
+    font-size: var(--text-sm);
+}
+
+.form-group input:valid:not(:placeholder-shown),
+.form-group select:valid,
+.form-group textarea:valid:not(:placeholder-shown) {
+    border-color: var(--success) !important;
+}
+
+/* Loading state for booking form */
+.booking-form.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.booking-form.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: var(--text-xl);
+    font-weight: 600;
+}
+
+/* Success state */
+.form-group input.success,
+.form-group select.success,
+.form-group textarea.success {
+    border-color: var(--success) !important;
+    background: rgba(16, 185, 129, 0.05) !important;
+}
