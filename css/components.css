@@ -7,23 +7,6 @@
   position: relative;
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: var(--gradient-primary);
-  transition: var(--transition);
-  transform: translateX(-50%);
-}
-
-.nav-link.active::after,
-.nav-link:hover::after {
-  width: 80%;
-}
-
 /* Enhanced Service Cards */
 .service-card {
   position: relative;
