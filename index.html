@@ -1,89 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusFix UENR → 70% Cheaper Phone Repairs | Same-Day</title>
-  <meta name="description" content="UENR's #1 student-run phone repair. 70% cheaper than town. Free hostel pickup. Screen, battery, charging fixes.">
-  <meta property="og:title" content="CampusFix UENR - Fast & Affordable Phone Repairs">
-  <meta property="og:description" content="Same-day service with free hostel pickup">
-  <meta property="og:image" content="https://yourdomain.com/assets/img/hero.jpg">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="assets/css/style.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFix UENR → Premium Phone Repair | 70% Cheaper | Same-Day Service</title>
+    <meta name="description" content="UENR's premium student-run phone repair. 70% cheaper than town. Same-day repairs with free hostel pickup. Screen, battery & charging port fixes.">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
 </head>
-<body class="dark">
-  <div id="loading" class="loading"><div class="spinner"></div></div>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <span class="logo-text">Campus<span>Fix</span></span>
+            </div>
 
-  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
-    <i class="fas fa-sun"></i><i class="fas fa-moon"></i>
-  </button>
+            <div class="nav-menu" id="navMenu">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#process" class="nav-link">How It Works</a>
+                <a href="#testimonials" class="nav-link">Reviews</a>
+                <a href="https://wa.me/233246912468" class="nav-cta">
+                    <i class="fab fa-whatsapp"></i>
+                    Get Quote
+                </a>
+            </div>
 
-  <nav class="navbar">
-    <div class="container nav-container">
-      <a href="/" class="logo">
-        <img src="assets/img/logo.png" alt="CampusFix" width="40">
-        <span>Campus<span class="gradient">Fix</span></span>
-      </a>
-      <div class="nav-menu" id="navMenu">
-        <a href="/" class="nav-link active">Home</a>
-        <a href="quote.html" class="nav-link">Get Quote</a>
-        <a href="order.html" class="nav-link">Place Order</a>
-        <a href="track.html" class="nav-link">Track Repair</a>
-        <a href="https://wa.me/233246912468" class="btn btn-primary">WhatsApp Now</a>
-      </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
 
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <div class="badge">UENR's #1 Repair Service</div>
-        <h1>Phone Repairs Made <span class="gradient">Simple</span> & Affordable</h1>
-        <p class="subtitle">70% cheaper than town • Same-day service • Free hostel pickup & delivery</p>
-        <div class="stats">
-          <div><strong>500+</strong> Phones Fixed</div>
-          <div><strong>4.9★</strong> Rating</div>
-          <div><strong>2-4 hrs</strong> Average</div>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-bg-shape shape-1"></div>
+            <div class="hero-bg-shape shape-2"></div>
         </div>
-        <div class="hero-actions">
-          <a href="quote.html" class="btn btn-primary btn-large">Get Instant Quote</a>
-          <a href="tel:+233246912468" class="btn btn-outline btn-large">Call Now</a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <img src="assets/img/hero.jpg" alt="Technician repairing phone" loading="lazy">
-      </div>
-    </div>
-  </section>
 
-  <section class="services-preview">
-    <div class="container">
-      <h2>Most Popular Repairs</h2>
-      <div class="services-grid">
-        <div class="service-card">
-          <i class="fas fa-mobile-alt"></i>
-          <h3>Screen Replacement</h3>
-          <p>GH₵180 - GH₵450</p>
-          <span class="popular">Most Requested</span>
-        </div>
-        <div class="service-card">
-          <i class="fas fa-battery-full"></i>
-          <h3>Battery Replacement</h3>
-          <p>GH₵80 - GH₵180</p>
-        </div>
-        <div class="service-card">
-          <i class="fas fa-plug"></i>
-          <h3>Charging Port</h3>
-          <p>GH₵50 - GH₵150</p>
-        </div>
-      </div>
-      <a href="quote.html" class="btn btn-outline">See All Prices →</a>
-    </div>
-  </section>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-bolt"></i>
+                    <span>UENR's #1 Premium Repair Service</span>
+                </div>
 
-  <script src="assets/js/main.min.js"></script>
+                <h1 class="hero-title">
+                    Phone <span class="text-gradient">Repairs</span> Made <span class="text-accent">Simple</span> & <span class="text-primary">Affordable</span>
+                </h1>
+
+                <p class="hero-description">
+                    Professional phone repairs at UENR for <strong>70% less</strong> than town prices. 
+                    Same-day service with free hostel pickup & delivery.
+                </p>
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Phones Fixed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">4.9★</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">2-4</div>
+                        <div class="stat-label">Hours Repair</div>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="https://wa.me/233246912468" class="btn btn-primary btn-large">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp Now
+                    </a>
+                    <a href="tel:+233246912468" class="btn btn-secondary btn-large">
+                        <i class="fas fa-phone"></i>
+                        Call (024) 691-2468
+                    </a>
+                </div>
+
+                <div class="hero-features">
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>6 Months Warranty</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-clock"></i>
+                        <span>Same-Day Service</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-home"></i>
+                        <span>Free Hostel Pickup</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Premium Services</h2>
+                <p class="section-subtitle">Professional repairs with student-friendly pricing</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Screen Replacement</h3>
+                    <p>High-quality screen replacements with perfect touch sensitivity</p>
+                    <div class="service-price">GH₵180 - GH₵450</div>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Original quality displays</li>
+                        <li><i class="fas fa-check"></i> 6 months warranty</li>
+                        <li><i class="fas fa-check"></i> Touch guaranteed</li>
+                    </ul>
+                    <a href="https://wa.me/233246912468?text=Hello! I need screen replacement service" class="btn btn-outline">Get Quote</a>
+                </div>
+
+                <div class="service-card featured">
+                    <div class="service-badge">Most Popular</div>
+                    <div class="service-icon">
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                    <h3>Battery Replacement</h3>
+                    <p>Extend your phone's life with long-lasting batteries</p>
+                    <div class="service-price">GH₵80 - GH₵180</div>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> 1 year warranty</li>
+                        <li><i class="fas fa-check"></i> Fast charging</li>
+                        <li><i class="fas fa-check"></i> Improved battery life</li>
+                    </ul>
+                    <a href="https://wa.me/233246912468?text=Hello! I need battery replacement service" class="btn btn-primary">Get Quote</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Charging Port</h3>
+                    <p>Fix charging issues and restore fast charging</p>
+                    <div class="service-price">GH₵50 - GH₵150</div>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Fast charging restored</li>
+                        <li><i class="fas fa-check"></i> Data transfer fixed</li>
+                        <li><i class="fas fa-check"></i> 6 months warranty</li>
+                    </ul>
+                    <a href="https://wa.me/233246912468?text=Hello! I need charging port repair" class="btn btn-outline">Get Quote</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3>Water Damage</h3>
+                    <p>Professional water damage repair and restoration</p>
+                    <div class="service-price">GH₵100 - GH₵500</div>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Deep cleaning</li>
+                        <li><i class="fas fa-check"></i> Corrosion removal</li>
+                        <li><i class="fas fa-check"></i> Component testing</li>
+                    </ul>
+                    <a href="https://wa.me/233246912468?text=Hello! My phone has water damage" class="btn btn-outline">Get Quote</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Camera Repair</h3>
+                    <p>Fix blurry, black, or damaged cameras</p>
+                    <div class="service-price">GH₵120 - GH₵300</div>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Front & back cameras</li>
+                        <li><i class="fas fa-check"></i> Focus issues fixed</li>
+                        <li><i class="fas fa-check"></i> 6 months warranty</li>
+                    </ul>
+                    <a href="https://wa.me/233246912468?text=Hello! I need camera repair" class="btn btn-outline">Get Quote</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3>Software Issues</h3>
+                    <p>Fix software problems and performance issues</p>
+                    <div class="service-price">GH₵40 - GH₵120</div>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> OS updates</li>
+                        <li><i class="fas fa-check"></i> Performance optimization</li>
+                        <li><i class="fas fa-check"></i> Data backup included</li>
+                    </ul>
+                    <a href="https://wa.me/233246912468?text=Hello! I have software issues" class="btn btn-outline">Get Quote</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="process">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Simple, fast, and hassle-free repair process</p>
+            </div>
+
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Contact Us</h3>
+                        <p>Message us on WhatsApp or call to describe your phone issue</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Get Quote</h3>
+                        <p>We provide instant pricing and estimated repair time</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Free Pickup</h3>
+                        <p>We collect your phone from your hostel at your convenience</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Fast Repair</h3>
+                        <p>Our technicians fix your phone using quality parts</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">05</div>
+                    <div class="step-content">
+                        <h3>Quality Check</h3>
+                        <p>We thoroughly test your phone before delivery</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">06</div>
+                    <div class="step-content">
+                        <h3>Free Delivery</h3>
+                        <p>We return your fully functional phone to your hostel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Student Reviews</h2>
+                <p class="section-subtitle">What UENR students say about our service</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="avatar">AK</div>
+                        <div>
+                            <h4>Abena Kumi</h4>
+                            <span>Computer Science, Level 300</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"My iPhone screen was completely shattered. CampusFix had it fixed in 3 hours for half the town price. Amazing service!"</p>
+                    </div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="avatar">KA</div>
+                        <div>
+                            <h4>Kwame Asante</h4>
+                            <span>Electrical Engineering, Level 400</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"Battery issues were ruining my phone. These guys replaced it same-day and delivered to my hostel. Better than new!"</p>
+                    </div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="avatar">EM</div>
+                        <div>
+                            <h4>Esi Mensah</h4>
+                            <span>Business Admin, Level 200</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"Water damage killed my phone before exams. CampusFix brought it back to life in 2 days. Saved me from buying new!"</p>
+                    </div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Fix Your Phone?</h2>
+                <p>Don't let a broken phone disrupt your studies. Get professional repair service today.</p>
+                <div class="cta-actions">
+                    <a href="https://wa.me/233246912468" class="btn btn-primary btn-large">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp Now
+                    </a>
+                    <a href="tel:+233246912468" class="btn btn-secondary btn-large">
+                        <i class="fas fa-phone"></i>
+                        Call (024) 691-2468
+                    </a>
+                </div>
+                <div class="cta-features">
+                    <div class="feature">
+                        <i class="fas fa-clock"></i>
+                        <span>Same-Day Service</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>6 Months Warranty</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-home"></i>
+                        <span>Free Hostel Pickup</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-tools"></i>
+                        <span>Campus<span>Fix</span></span>
+                    </div>
+                    <p>UENR's premium student-run phone repair service. Fast, affordable, and reliable.</p>
+                    <div class="social-links">
+                        <a href="https://wa.me/233246912468"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#process">How It Works</a></li>
+                        <li><a href="#testimonials">Reviews</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> (024) 691-2468</li>
+                        <li><i class="fab fa-whatsapp"></i> WhatsApp</li>
+                        <li><i class="fas fa-map-marker"></i> UENR Campus</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li>Screen Replacement</li>
+                        <li>Battery Replacement</li>
+                        <li>Charging Port</li>
+                        <li>Water Damage</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 CampusFix UENR. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script src="js/main.js"></script>
 </body>
 </html>
