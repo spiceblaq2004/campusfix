@@ -932,3 +932,466 @@
     border-color: var(--success) !important;
     background: rgba(16, 185, 129, 0.05) !important;
 }
+/* ================================
+   MOBILE RESPONSIVE FIXES
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Fix packed text in hero section */
+  .hero-title {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+    line-height: 1.2 !important;
+  }
+  
+  .hero-title .title-line {
+    margin-bottom: 0.3rem !important;
+  }
+  
+  .hero-description {
+    font-size: var(--text-lg) !important;
+    line-height: 1.5 !important;
+    padding: 0 var(--space-sm);
+  }
+  
+  /* Fix packed quote calculator */
+  .quote-calculator {
+    padding: var(--space-lg) !important;
+    margin: 0 var(--space-sm) !important;
+  }
+  
+  .form-grid {
+    gap: var(--space-md) !important;
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  .calculator-form {
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  /* Fix packed result card */
+  .result-card {
+    padding: var(--space-lg) !important;
+  }
+  
+  .price {
+    font-size: 2rem !important;
+    margin: var(--space-sm) 0 !important;
+  }
+  
+  .result-header {
+    flex-direction: column !important;
+    gap: var(--space-sm) !important;
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  .result-header h3 {
+    font-size: var(--text-lg) !important;
+    margin-bottom: var(--space-sm) !important;
+  }
+  
+  .price-breakdown {
+    padding: var(--space-md) !important;
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  .price-breakdown h4 {
+    font-size: var(--text-base) !important;
+    margin-bottom: var(--space-sm) !important;
+  }
+  
+  .price-breakdown li {
+    font-size: var(--text-sm) !important;
+    margin-bottom: var(--space-xs) !important;
+  }
+  
+  .result-actions {
+    gap: var(--space-sm) !important;
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  /* Fix packed service cards */
+  .service-card {
+    padding: var(--space-lg) !important;
+    margin: 0 var(--space-xs) !important;
+  }
+  
+  .service-card h3 {
+    font-size: var(--text-xl) !important;
+    margin-bottom: var(--space-sm) !important;
+  }
+  
+  .service-card p {
+    font-size: var(--text-base) !important;
+    line-height: 1.5 !important;
+    margin-bottom: var(--space-md) !important;
+  }
+  
+  .service-features {
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  .service-features li {
+    font-size: var(--text-sm) !important;
+    margin-bottom: var(--space-xs) !important;
+  }
+  
+  /* Fix packed trust badges */
+  .trust-badges {
+    gap: var(--space-lg) !important;
+  }
+  
+  .trust-item {
+    padding: var(--space-lg) !important;
+  }
+  
+  .trust-icon {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 1.5rem !important;
+    margin-bottom: var(--space-md) !important;
+  }
+  
+  /* Fix packed booking form */
+  .booking-form {
+    padding: var(--space-lg) !important;
+    margin: 0 var(--space-sm) !important;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: var(--space-md) !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+  
+  /* Fix packed status checker */
+  .status-checker {
+    margin: 0 var(--space-sm) !important;
+  }
+  
+  .status-result {
+    padding: var(--space-lg) !important;
+  }
+  
+  .status-code {
+    font-size: var(--text-xl) !important;
+  }
+  
+  /* Fix packed testimonials */
+  .testimonial-card {
+    padding: var(--space-lg) !important;
+    margin: 0 var(--space-xs) !important;
+  }
+  
+  .testimonial-content p {
+    font-size: var(--text-base) !important;
+    line-height: 1.5 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small device fixes */
+  .container {
+    padding: 0 var(--space-md) !important;
+  }
+  
+  /* Hero section spacing */
+  .hero-content {
+    padding: 0 var(--space-xs) !important;
+  }
+  
+  .hero-badge {
+    padding: var(--space-sm) var(--space-md) !important;
+    font-size: var(--text-sm) !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  
+  .hero-stats {
+    gap: var(--space-lg) !important;
+    justify-content: space-around !important;
+  }
+  
+  .stat-number {
+    font-size: var(--text-2xl) !important;
+  }
+  
+  .stat-label {
+    font-size: var(--text-xs) !important;
+  }
+  
+  .hero-actions {
+    gap: var(--space-sm) !important;
+  }
+  
+  .hero-features {
+    gap: var(--space-md) !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+  
+  .feature {
+    font-size: var(--text-sm) !important;
+  }
+  
+  /* Quote calculator ultra-compact fix */
+  .quote-calculator {
+    padding: var(--space-md) !important;
+  }
+  
+  .form-group label {
+    font-size: var(--text-sm) !important;
+  }
+  
+  .form-group select {
+    padding: var(--space-sm) var(--space-md) !important;
+  }
+  
+  .price {
+    font-size: 1.75rem !important;
+  }
+  
+  .time-estimate {
+    padding: var(--space-xs) var(--space-sm) !important;
+    font-size: var(--text-sm) !important;
+  }
+  
+  /* Service cards ultra-compact */
+  .services-grid {
+    gap: var(--space-lg) !important;
+  }
+  
+  .service-image {
+    height: 150px !important;
+    margin-bottom: var(--space-md) !important;
+  }
+  
+  .service-icon {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 1.5rem !important;
+    margin-bottom: var(--space-md) !important;
+  }
+  
+  /* Section headers */
+  .section-title {
+    font-size: var(--text-3xl) !important;
+    padding: 0 var(--space-sm) !important;
+  }
+  
+  .section-subtitle {
+    font-size: var(--text-lg) !important;
+    padding: 0 var(--space-md) !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* Fix button text wrapping */
+  .btn {
+    white-space: nowrap !important;
+    font-size: var(--text-sm) !important;
+    padding: var(--space-md) var(--space-lg) !important;
+  }
+  
+  .btn-large {
+    padding: var(--space-lg) var(--space-xl) !important;
+  }
+  
+  /* Navigation fixes */
+  .nav-menu {
+    padding: var(--space-lg) !important;
+  }
+  
+  .nav-link {
+    padding: var(--space-md) !important;
+    font-size: var(--text-base) !important;
+  }
+}
+
+/* ================================
+   TEXT SPACING IMPROVEMENTS
+   ================================ */
+
+/* Better line heights for readability */
+.hero-description,
+.section-subtitle,
+.service-card p,
+.testimonial-content p,
+.trust-item p {
+  line-height: 1.6 !important;
+}
+
+/* Better spacing for packed sections */
+.section-header {
+  margin-bottom: var(--space-xl) !important;
+}
+
+.services-grid,
+.process-steps,
+.testimonials-grid {
+  gap: var(--space-lg) !important;
+}
+
+/* Better form spacing */
+.form-group {
+  gap: var(--space-sm) !important;
+}
+
+.form-group label {
+  margin-bottom: var(--space-xs) !important;
+}
+
+/* Better button spacing */
+.btn {
+  gap: var(--space-sm) !important;
+}
+
+/* Fix for very small screens (iPhone SE etc) */
+@media (max-width: 375px) {
+  .hero-title {
+    font-size: clamp(1.75rem, 7vw, 2.5rem) !important;
+  }
+  
+  .hero-description {
+    font-size: var(--text-base) !important;
+  }
+  
+  .hero-stats {
+    gap: var(--space-md) !important;
+  }
+  
+  .stat {
+    min-width: 80px !important;
+  }
+  
+  .quote-calculator {
+    margin: 0 var(--space-xs) !important;
+    padding: var(--space-md) !important;
+  }
+  
+  .price {
+    font-size: 1.5rem !important;
+  }
+  
+  .result-actions .btn {
+    font-size: var(--text-xs) !important;
+    padding: var(--space-sm) var(--space-md) !important;
+  }
+  
+  /* Stack hero actions vertically on very small screens */
+  .hero-actions {
+    flex-direction: column !important;
+  }
+  
+  .hero-actions .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ================================
+   QUOTE CALCULATOR MOBILE SPECIFIC FIXES
+   ================================ */
+
+@media (max-width: 768px) {
+  .quote-calculator {
+    border-radius: var(--radius-lg) !important;
+  }
+  
+  .calculator-form {
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-md) !important;
+  }
+  
+  .form-group select {
+    height: 50px !important; /* Better touch target */
+  }
+  
+  #calculateQuote {
+    margin-top: var(--space-md) !important;
+  }
+  
+  /* Result card mobile optimization */
+  .result-card {
+    text-align: center !important;
+  }
+  
+  .price-display {
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  .price-range {
+    margin-bottom: var(--space-md) !important;
+  }
+  
+  .price-breakdown {
+    text-align: left !important;
+    margin-bottom: var(--space-lg) !important;
+  }
+  
+  .result-actions {
+    flex-direction: column !important;
+  }
+  
+  .result-actions .btn {
+    width: 100% !important;
+  }
+}
+
+/* ================================
+   IMPROVE TOUCH TARGETS FOR MOBILE
+   ================================ */
+
+@media (max-width: 768px) {
+  .btn,
+  .nav-link,
+  .form-group select,
+  .form-group input,
+  .form-group textarea {
+    min-height: 44px !important; /* Apple's recommended touch target */
+  }
+  
+  .service-card,
+  .testimonial-card,
+  .trust-item {
+    cursor: pointer !important;
+  }
+}
+
+/* ================================
+   FIX TEXT WRAPPING ISSUES
+   ================================ */
+
+.hero-title .text-gradient,
+.hero-title .text-accent,
+.hero-title .text-primary {
+  display: inline !important; /* Prevent awkward line breaks */
+}
+
+.service-card h3,
+.testimonial-header h4 {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Ensure long words break properly */
+.booking-form input,
+.booking-form textarea {
+  word-wrap: break-word !important;
+}
+
+/* ================================
+   IMPROVE LOADING STATES
+   ================================ */
+
+@media (max-width: 768px) {
+  .btn-loading::after {
+    width: 16px !important;
+    height: 16px !important;
+    margin: -8px 0 0 -8px !important;
+  }
+}
