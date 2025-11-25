@@ -204,3 +204,345 @@
 .hover-lift:hover {
   transform: translateY(-5px);
 }
+/* ================================
+   QUOTE CALCULATOR STYLES
+   ================================ */
+
+.quote-section {
+  padding: var(--space-2xl) 0;
+  background: var(--dark);
+}
+
+.quote-calculator {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--gray-800);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calculator-form {
+  margin-bottom: var(--space-xl);
+}
+
+.quote-result.hidden {
+  display: none;
+}
+
+.result-card {
+  text-align: center;
+  padding: var(--space-xl);
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.result-card .price {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin: var(--space-md) 0;
+}
+
+.result-card .time {
+  font-size: 1.2rem;
+  color: var(--gray-300);
+  margin-bottom: var(--space-lg);
+}
+
+.result-card .note {
+  font-size: 0.9rem;
+  color: var(--gray-400);
+  margin-bottom: var(--space-lg);
+}
+
+/* ================================
+   BOOKING FORM STYLES
+   ================================ */
+
+.booking-section {
+  padding: var(--space-2xl) 0;
+  background: var(--darker);
+}
+
+.booking-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.booking-form {
+  background: var(--gray-800);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--gray-300);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--light);
+  font-size: var(--text-base);
+  transition: var(--transition);
+  font-family: var(--font-family);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ================================
+   STATUS CHECKER STYLES
+   ================================ */
+
+.status-section {
+  padding: var(--space-2xl) 0;
+  background: var(--dark);
+}
+
+.status-checker {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-box {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.search-box input {
+  flex: 1;
+  padding: var(--space-lg);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  color: var(--light);
+  font-size: var(--text-base);
+}
+
+.status-result {
+  min-height: 200px;
+  background: var(--gray-800);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  margin-bottom: var(--space-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.demo-codes {
+  text-align: center;
+  color: var(--gray-400);
+  font-size: var(--text-sm);
+}
+
+/* Status Display Styles */
+.status-card {
+  text-align: center;
+}
+
+.status-header {
+  margin-bottom: var(--space-xl);
+}
+
+.status-code {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: var(--space-sm);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--primary);
+  color: white;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.status-badge.completed {
+  background: var(--success);
+}
+
+.status-badge.progress {
+  background: var(--accent);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin: var(--space-xl) 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.status-timeline {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: var(--space-xl) 0;
+}
+
+.status-timeline::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-marker {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--gray-600);
+  border: 3px solid var(--gray-400);
+  margin-bottom: var(--space-sm);
+  transition: var(--transition);
+}
+
+.step-marker.completed {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.step-marker.current {
+  background: var(--primary);
+  border-color: var(--primary);
+  animation: pulse 2s infinite;
+}
+
+.step-label {
+  font-size: var(--text-sm);
+  color: var(--gray-400);
+  text-align: center;
+}
+
+.step-time {
+  font-size: var(--text-xs);
+  color: var(--gray-500);
+  margin-top: var(--space-xs);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Notification Styles */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--success);
+  color: white;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  z-index: 10000;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification.error {
+  background: var(--error);
+}
+
+.notification.warning {
+  background: var(--warning);
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
+.btn-full {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Responsive Design for New Sections */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-box {
+    flex-direction: column;
+  }
+  
+  .status-timeline {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  
+  .status-timeline::before {
+    display: none;
+  }
+  
+  .timeline-step {
+    flex-direction: row;
+    gap: var(--space-md);
+  }
+  
+  .step-label {
+    text-align: left;
+  }
+}
