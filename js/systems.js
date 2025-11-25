@@ -1,5 +1,5 @@
 // ================================
-// FRONTEND-ONLY SYSTEMS
+// FRONTEND-ONLY SYSTEMS - FIXED
 // ================================
 
 class CampusFixSystems {
@@ -14,35 +14,89 @@ class CampusFixSystems {
         this.setupStatusChecker();
         this.setupNotifications();
         this.setupAnalytics();
+        
+        console.log('✅ All systems initialized');
     }
 
     // ================================
-    // QUOTE CALCULATOR SYSTEM
+    // QUOTE CALCULATOR SYSTEM - FIXED
     // ================================
 
     setupQuoteCalculator() {
         const calculateBtn = document.getElementById('calculateQuote');
+        console.log('🔧 Setting up quote calculator...', calculateBtn);
+        
         if (calculateBtn) {
-            calculateBtn.addEventListener('click', () => {
+            calculateBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 this.calculateQuote();
+            });
+        } else {
+            console.error('❌ Calculate button not found!');
+        }
+
+        // Also add change listeners to form fields
+        const brandSelect = document.getElementById('calcBrand');
+        const repairSelect = document.getElementById('calcRepair');
+        
+        if (brandSelect) {
+            brandSelect.addEventListener('change', () => {
+                this.updateQuoteButtonState();
+            });
+        }
+        
+        if (repairSelect) {
+            repairSelect.addEventListener('change', () => {
+                this.updateQuoteButtonState();
             });
         }
     }
 
-    calculateQuote() {
+    updateQuoteButtonState() {
         const brand = document.getElementById('calcBrand').value;
         const repair = document.getElementById('calcRepair').value;
+        const calculateBtn = document.getElementById('calculateQuote');
+        
+        if (brand && repair) {
+            calculateBtn.disabled = false;
+            calculateBtn.classList.remove('btn-disabled');
+        } else {
+            calculateBtn.disabled = true;
+            calculateBtn.classList.add('btn-disabled');
+        }
+    }
+
+    calculateQuote() {
+        console.log('🧮 Calculating quote...');
+        
+        const brand = document.getElementById('calcBrand').value;
+        const repair = document.getElementById('calcRepair').value;
+        
+        console.log('📱 Selected:', { brand, repair });
         
         if (!brand || !repair) {
             this.showNotification('Please select both phone brand and repair type', 'error');
             return;
         }
 
-        const quote = this.getQuotePrice(brand, repair);
-        this.displayQuote(quote);
-        
-        // Track quote calculation
-        this.trackEvent('quote_calculated', `${brand}_${repair}`);
+        // Add loading state
+        const calculateBtn = document.getElementById('calculateQuote');
+        const originalText = calculateBtn.innerHTML;
+        calculateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating...';
+        calculateBtn.disabled = true;
+
+        // Simulate calculation delay
+        setTimeout(() => {
+            const quote = this.getQuotePrice(brand, repair);
+            this.displayQuote(quote);
+            
+            // Restore button
+            calculateBtn.innerHTML = originalText;
+            calculateBtn.disabled = false;
+            
+            // Track quote calculation
+            this.trackEvent('quote_calculated', `${brand}_${repair}`);
+        }, 800);
     }
 
     getQuotePrice(brand, repair) {
@@ -51,30 +105,51 @@ class CampusFixSystems {
                 'screen': { min: 300, max: 450, time: '3-5 hours' },
                 'battery': { min: 120, max: 180, time: '1-2 hours' },
                 'charging': { min: 80, max: 150, time: '2-3 hours' },
-                'camera': { min: 120, max: 300, time: '2-4 hours' }
+                'camera': { min: 120, max: 300, time: '2-4 hours' },
+                'water': { min: 150, max: 500, time: '1-2 days' },
+                'software': { min: 40, max: 120, time: '1-2 hours' }
             },
             'Samsung': {
                 'screen': { min: 250, max: 400, time: '3-5 hours' },
                 'battery': { min: 100, max: 160, time: '1-2 hours' },
                 'charging': { min: 70, max: 130, time: '2-3 hours' },
-                'camera': { min: 100, max: 280, time: '2-4 hours' }
+                'camera': { min: 100, max: 280, time: '2-4 hours' },
+                'water': { min: 120, max: 450, time: '1-2 days' },
+                'software': { min: 40, max: 100, time: '1-2 hours' }
             },
             'Other': {
                 'screen': { min: 200, max: 380, time: '3-5 hours' },
                 'battery': { min: 80, max: 150, time: '1-2 hours' },
                 'charging': { min: 60, max: 120, time: '2-3 hours' },
-                'camera': { min: 90, max: 250, time: '2-4 hours' }
+                'camera': { min: 90, max: 250, time: '2-4 hours' },
+                'water': { min: 100, max: 400, time: '1-2 days' },
+                'software': { min: 30, max: 90, time: '1-2 hours' }
             }
         };
 
-        const price = priceMatrix[brand]?.[repair] || { min: 100, max: 200, time: '2-4 hours' };
+        // Map repair types to keys
+        const repairMap = {
+            'screen': 'screen',
+            'battery': 'battery', 
+            'charging': 'charging',
+            'camera': 'camera',
+            'water': 'water',
+            'software': 'software'
+        };
+
+        const repairKey = repairMap[repair] || 'screen';
+        const price = priceMatrix[brand]?.[repairKey] || { min: 100, max: 200, time: '2-4 hours' };
         const averagePrice = Math.round((price.min + price.max) / 2);
+        
+        console.log('💰 Calculated price:', price);
         
         return {
             min: price.min,
             max: price.max,
             average: averagePrice,
-            time: price.time
+            time: price.time,
+            brand: brand,
+            repair: repair
         };
     }
 
@@ -83,11 +158,41 @@ class CampusFixSystems {
         const priceElement = document.getElementById('estimatedPrice');
         const timeElement = document.getElementById('estimatedTime');
         
+        if (!resultDiv || !priceElement || !timeElement) {
+            console.error('❌ Quote result elements not found!');
+            this.showNotification('Error displaying quote result', 'error');
+            return;
+        }
+
+        // Add animation class
+        resultDiv.classList.add('animate-bounceIn');
+        
         priceElement.textContent = `GH₵ ${quote.min} - GH₵ ${quote.max}`;
         timeElement.textContent = quote.time;
         
+        // Update WhatsApp link with quote info
+        const whatsappBtn = resultDiv.querySelector('a.btn');
+        if (whatsappBtn) {
+            const message = `Hello! I'd like a quote for:\n• ${quote.brand} ${quote.reair} repair\n• Estimated: GH₵ ${quote.min}-${quote.max}\n• Time: ${quote.time}\n\nPlease provide exact pricing.`;
+            whatsappBtn.href = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
+        }
+        
         resultDiv.classList.remove('hidden');
-        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Scroll to result smoothly
+        setTimeout(() => {
+            resultDiv.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }, 300);
+
+        // Remove animation class after animation completes
+        setTimeout(() => {
+            resultDiv.classList.remove('animate-bounceIn');
+        }, 600);
+        
+        console.log('✅ Quote displayed successfully');
     }
 
     // ================================
@@ -96,6 +201,8 @@ class CampusFixSystems {
 
     setupBookingSystem() {
         const bookingForm = document.getElementById('bookingForm');
+        console.log('🔧 Setting up booking system...', bookingForm);
+        
         if (bookingForm) {
             bookingForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -112,18 +219,31 @@ class CampusFixSystems {
             return;
         }
 
-        // Generate booking confirmation
-        const bookingCode = this.generateBookingCode();
-        const booking = this.createBooking(bookingCode, formData);
-        
-        // Save to localStorage
-        this.saveBooking(booking);
-        
-        // Show success and open WhatsApp
-        this.showBookingSuccess(booking);
-        
-        // Track booking
-        this.trackEvent('booking_created', formData.device);
+        // Add loading state to button
+        const submitBtn = document.querySelector('#bookingForm button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
+        submitBtn.disabled = true;
+
+        // Simulate processing delay
+        setTimeout(() => {
+            // Generate booking confirmation
+            const bookingCode = this.generateBookingCode();
+            const booking = this.createBooking(bookingCode, formData);
+            
+            // Save to localStorage
+            this.saveBooking(booking);
+            
+            // Show success and open WhatsApp
+            this.showBookingSuccess(booking);
+            
+            // Track booking
+            this.trackEvent('booking_created', formData.device);
+            
+            // Restore button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 1000);
     }
 
     getBookingFormData() {
@@ -138,7 +258,20 @@ class CampusFixSystems {
     }
 
     validateBookingForm(data) {
-        return data.name && data.phone && data.hostel && data.device && data.issue;
+        const errors = [];
+        
+        if (!data.name) errors.push('Name is required');
+        if (!data.phone) errors.push('Phone number is required');
+        if (!data.hostel) errors.push('Hostel information is required');
+        if (!data.device) errors.push('Device model is required');
+        if (!data.issue) errors.push('Issue description is required');
+        
+        if (errors.length > 0) {
+            this.showNotification(errors.join(', '), 'error');
+            return false;
+        }
+        
+        return true;
     }
 
     generateBookingCode() {
@@ -152,7 +285,7 @@ class CampusFixSystems {
             code: code,
             ...data,
             status: 'pending',
-            progress: 0,
+            progress: 10,
             createdAt: new Date().toISOString(),
             steps: {
                 received: new Date().toLocaleTimeString(),
@@ -168,6 +301,7 @@ class CampusFixSystems {
         const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
         bookings[booking.code] = booking;
         localStorage.setItem('campusFixBookings', JSON.stringify(bookings));
+        console.log('💾 Booking saved:', booking.code);
     }
 
     showBookingSuccess(booking) {
@@ -184,7 +318,7 @@ class CampusFixSystems {
         const whatsappUrl = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
         
-        this.showNotification('Booking created! Opening WhatsApp to send details...', 'success');
+        this.showNotification('✅ Booking created! Opening WhatsApp to send details...', 'success');
         
         // Clear form
         document.getElementById('bookingForm').reset();
@@ -196,6 +330,8 @@ class CampusFixSystems {
 
     setupStatusChecker() {
         const checkBtn = document.getElementById('checkStatus');
+        console.log('🔧 Setting up status checker...', checkBtn);
+        
         if (checkBtn) {
             checkBtn.addEventListener('click', () => {
                 this.checkRepairStatus();
@@ -214,18 +350,31 @@ class CampusFixSystems {
     }
 
     checkRepairStatus() {
-        const code = document.getElementById('statusCode').value.trim();
+        const code = document.getElementById('statusCode').value.trim().toUpperCase();
         
         if (!code) {
             this.showNotification('Please enter a repair code', 'error');
             return;
         }
 
-        const status = this.getRepairStatus(code);
-        this.displayStatus(status, code);
-        
-        // Track status check
-        this.trackEvent('status_checked', code);
+        // Add loading state
+        const checkBtn = document.getElementById('checkStatus');
+        const originalText = checkBtn.innerHTML;
+        checkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+        checkBtn.disabled = true;
+
+        // Simulate API call delay
+        setTimeout(() => {
+            const status = this.getRepairStatus(code);
+            this.displayStatus(status, code);
+            
+            // Restore button
+            checkBtn.innerHTML = originalText;
+            checkBtn.disabled = false;
+            
+            // Track status check
+            this.trackEvent('status_checked', code);
+        }, 800);
     }
 
     getRepairStatus(code) {
@@ -292,7 +441,7 @@ class CampusFixSystems {
         
         if (!status.exists) {
             resultDiv.innerHTML = `
-                <div class="status-card">
+                <div class="status-card animate-shake">
                     <div class="status-header">
                         <div class="status-code">${code}</div>
                         <div style="color: var(--error); margin-top: var(--space-md);">
@@ -303,6 +452,11 @@ class CampusFixSystems {
                     <p style="color: var(--gray-400); text-align: center;">
                         Please check your code and try again, or contact us directly.
                     </p>
+                    <div style="text-align: center; margin-top: var(--space-lg);">
+                        <a href="https://wa.me/233246912468" class="btn btn-primary">
+                            <i class="fab fa-whatsapp"></i> Contact Support
+                        </a>
+                    </div>
                 </div>
             `;
             return;
@@ -312,7 +466,7 @@ class CampusFixSystems {
         const progressPercent = status.progress + '%';
 
         resultDiv.innerHTML = `
-            <div class="status-card">
+            <div class="status-card animate-scaleIn">
                 <div class="status-header">
                     <div class="status-code">${status.code}</div>
                     <div class="status-badge ${statusClass}">${status.status}</div>
@@ -335,7 +489,7 @@ class CampusFixSystems {
                 </div>
 
                 <div style="margin-top: var(--space-xl); text-align: center;">
-                    <a href="https://wa.me/233246912468" class="btn btn-primary">
+                    <a href="https://wa.me/233246912468" class="btn btn-primary hover-scale">
                         <i class="fab fa-whatsapp"></i> Contact Technician
                     </a>
                 </div>
@@ -345,16 +499,17 @@ class CampusFixSystems {
 
     generateTimelineHTML(steps) {
         const stepConfig = [
-            { key: 'received', label: 'Received', isCurrent: steps.repair === 'In Progress' && steps.quality === 'Pending' },
-            { key: 'diagnosis', label: 'Diagnosis', isCurrent: false },
-            { key: 'repair', label: 'Repair', isCurrent: steps.repair === 'In Progress' },
-            { key: 'quality', label: 'Quality Check', isCurrent: steps.quality === 'In Progress' },
-            { key: 'ready', label: 'Ready', isCurrent: steps.ready !== 'Pending' && steps.ready !== 'In Progress' }
+            { key: 'received', label: 'Received' },
+            { key: 'diagnosis', label: 'Diagnosis' },
+            { key: 'repair', label: 'Repair' },
+            { key: 'quality', label: 'Quality Check' },
+            { key: 'ready', label: 'Ready' }
         ];
 
-        return stepConfig.map(step => {
-            const isCompleted = steps[step.key] !== 'Pending' && steps[step.key] !== 'In Progress';
-            const isCurrent = step.isCurrent;
+        return stepConfig.map((step, index) => {
+            const stepTime = steps[step.key];
+            const isCompleted = stepTime !== 'Pending' && stepTime !== 'In Progress';
+            const isCurrent = stepTime === 'In Progress';
             
             let markerClass = '';
             if (isCompleted) markerClass = 'completed';
@@ -365,7 +520,7 @@ class CampusFixSystems {
                     <div class="step-marker ${markerClass}"></div>
                     <div class="step-content">
                         <div class="step-label">${step.label}</div>
-                        <div class="step-time">${steps[step.key]}</div>
+                        <div class="step-time">${stepTime}</div>
                     </div>
                 </div>
             `;
@@ -377,7 +532,7 @@ class CampusFixSystems {
     // ================================
 
     setupNotifications() {
-        // Notification container will be created when needed
+        console.log('🔧 Notification system ready');
     }
 
     showNotification(message, type = 'success') {
@@ -390,6 +545,38 @@ class CampusFixSystems {
                 <span>${message}</span>
             </div>
         `;
+
+        // Add styles if not already added
+        if (!document.querySelector('#notification-styles')) {
+            const styles = document.createElement('style');
+            styles.id = 'notification-styles';
+            styles.textContent = `
+                .notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--success);
+                    color: white;
+                    padding: var(--space-md) var(--space-lg);
+                    border-radius: var(--radius-lg);
+                    box-shadow: var(--shadow-xl);
+                    z-index: 10000;
+                    transform: translateX(400px);
+                    transition: transform 0.3s ease;
+                    max-width: 400px;
+                }
+                .notification.show {
+                    transform: translateX(0);
+                }
+                .notification.error {
+                    background: var(--error);
+                }
+                .notification.warning {
+                    background: var(--warning);
+                }
+            `;
+            document.head.appendChild(styles);
+        }
 
         // Add to page
         document.body.appendChild(notification);
@@ -425,6 +612,7 @@ class CampusFixSystems {
     setupAnalytics() {
         this.trackPageView();
         this.setupActivityTracking();
+        console.log('📊 Analytics system initialized');
     }
 
     trackPageView() {
@@ -499,6 +687,8 @@ class CampusFixSystems {
             localStorage.setItem('trackingEvents', JSON.stringify([]));
         }
 
+        console.log('💾 Data systems initialized');
+
         return {
             bookings: JSON.parse(localStorage.getItem('campusFixBookings') || '{}'),
             analytics: {
@@ -507,19 +697,6 @@ class CampusFixSystems {
             }
         };
     }
-
-    // ================================
-    // UTILITY METHODS
-    // ================================
-
-    formatPhone(phone) {
-        return phone.replace(/\D/g, '');
-    }
-
-    validatePhone(phone) {
-        const cleaned = this.formatPhone(phone);
-        return /^(\+233|0)[235]\d{8}$/.test(cleaned);
-    }
 }
 
 // Initialize systems when DOM is loaded
@@ -527,8 +704,3 @@ document.addEventListener('DOMContentLoaded', () => {
     window.campusFixSystems = new CampusFixSystems();
     console.log('🚀 CampusFix Systems Initialized');
 });
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CampusFixSystems;
-}
