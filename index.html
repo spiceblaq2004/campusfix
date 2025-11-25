@@ -315,123 +315,123 @@
     </section>
 
     <!-- Quote Calculator Section -->
-<section id="quote" class="quote-section">
-    <div class="container">
-        <div class="section-header scroll-reveal">
-            <h2 class="section-title">Get Instant Quote</h2>
-            <p class="section-subtitle">Check estimated repair costs in seconds</p>
-        </div>
-
-        <div class="quote-calculator">
-            <div class="calculator-form">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="calcBrand">
-                            <i class="fas fa-mobile-alt"></i>
-                            Phone Brand
-                        </label>
-                        <select id="calcBrand" required>
-                            <option value="">Select Your Phone Brand</option>
-                            <option value="iPhone">iPhone</option>
-                            <option value="Samsung">Samsung</option>
-                            <option value="Huawei">Huawei</option>
-                            <option value="Tecno">Tecno</option>
-                            <option value="Infinix">Infinix</option>
-                            <option value="Xiaomi">Xiaomi</option>
-                            <option value="Oppo">Oppo</option>
-                            <option value="Vivo">Vivo</option>
-                            <option value="Nokia">Nokia</option>
-                            <option value="Other">Other Brand</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="calcRepair">
-                            <i class="fas fa-tools"></i>
-                            Repair Type
-                        </label>
-                        <select id="calcRepair" required>
-                            <option value="">Select Repair Type</option>
-                            <option value="screen">Screen Replacement</option>
-                            <option value="battery">Battery Replacement</option>
-                            <option value="charging">Charging Port</option>
-                            <option value="camera">Camera Repair</option>
-                            <option value="water">Water Damage</option>
-                            <option value="software">Software Issues</option>
-                            <option value="backglass">Back Glass</option>
-                            <option value="speaker">Speaker/Microphone</option>
-                        </select>
-                    </div>
-                </div>
-                <button id="calculateQuote" class="btn btn-primary btn-full btn-large" disabled>
-                    <i class="fas fa-calculator"></i> Calculate Repair Cost
-                </button>
+    <section id="quote" class="quote-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <h2 class="section-title">Get Instant Quote</h2>
+                <p class="section-subtitle">Check estimated repair costs in seconds</p>
             </div>
 
-            <div id="quoteResult" class="quote-result hidden">
-                <div class="result-card animate-bounceIn">
-                    <div class="result-header">
-                        <h3>📱 Estimated Repair Cost</h3>
-                        <div class="result-badge" id="resultBadge">Standard Repair</div>
+            <div class="quote-calculator">
+                <div class="calculator-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="calcBrand">
+                                <i class="fas fa-mobile-alt"></i>
+                                Phone Brand
+                            </label>
+                            <select id="calcBrand" required>
+                                <option value="">Select Your Phone Brand</option>
+                                <option value="iPhone">iPhone</option>
+                                <option value="Samsung">Samsung</option>
+                                <option value="Huawei">Huawei</option>
+                                <option value="Tecno">Tecno</option>
+                                <option value="Infinix">Infinix</option>
+                                <option value="Xiaomi">Xiaomi</option>
+                                <option value="Oppo">Oppo</option>
+                                <option value="Vivo">Vivo</option>
+                                <option value="Nokia">Nokia</option>
+                                <option value="Other">Other Brand</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="calcRepair">
+                                <i class="fas fa-tools"></i>
+                                Repair Type
+                            </label>
+                            <select id="calcRepair" required>
+                                <option value="">Select Repair Type</option>
+                                <option value="screen">Screen Replacement</option>
+                                <option value="battery">Battery Replacement</option>
+                                <option value="charging">Charging Port</option>
+                                <option value="camera">Camera Repair</option>
+                                <option value="water">Water Damage</option>
+                                <option value="software">Software Issues</option>
+                                <option value="backglass">Back Glass</option>
+                                <option value="speaker">Speaker/Microphone</option>
+                            </select>
+                        </div>
                     </div>
-                    
-                    <div class="price-display">
-                        <div class="price-range">
-                            <span class="price-from">From</span>
-                            <div class="price" id="estimatedPrice">GH₵ 0 - GH₵ 0</div>
-                            <span class="price-note">Depending on model</span>
+                    <button id="calculateQuote" class="btn btn-primary btn-full btn-large" disabled>
+                        <i class="fas fa-calculator"></i> Calculate Repair Cost
+                    </button>
+                </div>
+
+                <div id="quoteResult" class="quote-result hidden">
+                    <div class="result-card animate-bounceIn">
+                        <div class="result-header">
+                            <h3>📱 Estimated Repair Cost</h3>
+                            <div class="result-badge" id="resultBadge">Standard Repair</div>
                         </div>
                         
-                        <div class="time-estimate">
-                            <i class="fas fa-clock"></i>
-                            <span id="estimatedTime">0 hours</span>
+                        <div class="price-display">
+                            <div class="price-range">
+                                <span class="price-from">From</span>
+                                <div class="price" id="estimatedPrice">GH₵ 0 - GH₵ 0</div>
+                                <span class="price-note">Depending on model</span>
+                            </div>
+                            
+                            <div class="time-estimate">
+                                <i class="fas fa-clock"></i>
+                                <span id="estimatedTime">0 hours</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="price-breakdown">
-                        <h4>What's included:</h4>
-                        <ul>
-                            <li><i class="fas fa-check"></i> Quality replacement parts</li>
-                            <li><i class="fas fa-check"></i> Professional installation</li>
-                            <li><i class="fas fa-check"></i> 6 months warranty</li>
-                            <li><i class="fas fa-check"></i> Free hostel pickup</li>
-                        </ul>
-                    </div>
+                        <div class="price-breakdown">
+                            <h4>What's included:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Quality replacement parts</li>
+                                <li><i class="fas fa-check"></i> Professional installation</li>
+                                <li><i class="fas fa-check"></i> 6 months warranty</li>
+                                <li><i class="fas fa-check"></i> Free hostel pickup</li>
+                            </ul>
+                        </div>
 
-                    <div class="result-actions">
-                        <a href="https://wa.me/233246912468" class="btn btn-primary btn-large" id="whatsappQuote">
-                            <i class="fab fa-whatsapp"></i> Get Exact Quote on WhatsApp
-                        </a>
-                        <button class="btn btn-outline" id="calculateAgain">
-                            <i class="fas fa-redo"></i> Calculate Another
-                        </button>
+                        <div class="result-actions">
+                            <a href="https://wa.me/233246912468" class="btn btn-primary btn-large" id="whatsappQuote">
+                                <i class="fab fa-whatsapp"></i> Get Exact Quote on WhatsApp
+                            </a>
+                            <button class="btn btn-outline" id="calculateAgain">
+                                <i class="fas fa-redo"></i> Calculate Another
+                            </button>
+                        </div>
+                        
+                        <p class="note">
+                            * Final price depends on your specific phone model. Contact us for exact pricing.
+                        </p>
                     </div>
-                    
-                    <p class="note">
-                        * Final price depends on your specific phone model. Contact us for exact pricing.
-                    </p>
+                </div>
+            </div>
+
+            <div class="quote-features">
+                <div class="feature-item">
+                    <i class="fas fa-bolt"></i>
+                    <h4>Instant Quotes</h4>
+                    <p>Get pricing in seconds</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Accurate Estimates</h4>
+                    <p>Based on real market prices</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-tools"></i>
+                    <h4>Professional Service</h4>
+                    <p>Quality guaranteed</p>
                 </div>
             </div>
         </div>
-
-        <div class="quote-features">
-            <div class="feature-item">
-                <i class="fas fa-bolt"></i>
-                <h4>Instant Quotes</h4>
-                <p>Get pricing in seconds</p>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-shield-alt"></i>
-                <h4>Accurate Estimates</h4>
-                <p>Based on real market prices</p>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-tools"></i>
-                <h4>Professional Service</h4>
-                <p>Quality guaranteed</p>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- Service Booking Section -->
     <section id="booking" class="booking-section">
@@ -446,7 +446,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="bookingName">Full Name *</label>
-                            <input type="text" id="bookingName" required placeholder="Enter your name">
+                            <input type="text" id="bookingName" required placeholder="Enter your full name">
                         </div>
                         <div class="form-group">
                             <label for="bookingPhone">Phone Number *</label>
@@ -468,8 +468,8 @@
                             <label for="bookingUrgency">Urgency Level</label>
                             <select id="bookingUrgency">
                                 <option value="standard">Standard (2-3 days)</option>
-                                <option value="express">Express (Same day)</option>
-                                <option value="emergency">Emergency (4-6 hours)</option>
+                                <option value="express">Express (Same day) +GH₵20</option>
+                                <option value="emergency">Emergency (4-6 hours) +GH₵50</option>
                             </select>
                         </div>
                     </div>
