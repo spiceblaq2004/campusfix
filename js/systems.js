@@ -1,6 +1,44 @@
 // ================================
 // FRONTEND-ONLY SYSTEMS - FIXED
 // ================================
+class CampusFixSystems {
+    constructor() {
+        this.isInitialized = false;
+        this.init();
+    }
+
+    init() {
+        try {
+            this.repairData = this.initializeRepairData();
+            this.initializeSystems();
+            this.isInitialized = true;
+            console.log('✅ All systems initialized successfully');
+        } catch (error) {
+            console.error('❌ System initialization failed:', error);
+            this.showNotification('System initialization failed. Please refresh the page.', 'error');
+        }
+    }
+
+    initializeSystems() {
+        // Add safety checks for all DOM elements
+        this.safeExecute(() => this.setupQuoteCalculator(), 'Quote Calculator');
+        this.safeExecute(() => this.setupBookingSystem(), 'Booking System');
+        this.safeExecute(() => this.setupStatusChecker(), 'Status Checker');
+        this.safeExecute(() => this.setupNotifications(), 'Notifications');
+        this.safeExecute(() => this.setupAnalytics(), 'Analytics');
+    }
+
+    safeExecute(fn, systemName) {
+        try {
+            fn();
+            console.log(`✅ ${systemName} setup completed`);
+        } catch (error) {
+            console.error(`❌ ${systemName} setup failed:`, error);
+        }
+    }
+
+    // ... rest of your existing methods
+}
 
 class CampusFixSystems {
     constructor() {
