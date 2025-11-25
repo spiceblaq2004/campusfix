@@ -268,7 +268,131 @@
             </div>
         </div>
     </section>
+<!-- Quote Calculator Section -->
+    <section id="quote" class="quote-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get Instant Quote</h2>
+                <p class="section-subtitle">Check estimated repair costs in seconds</p>
+            </div>
 
+            <div class="quote-calculator">
+                <div class="calculator-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="calcBrand">Phone Brand</label>
+                            <select id="calcBrand">
+                                <option value="">Select Brand</option>
+                                <option value="iPhone">iPhone</option>
+                                <option value="Samsung">Samsung</option>
+                                <option value="Other">Other Android</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="calcRepair">Repair Type</label>
+                            <select id="calcRepair">
+                                <option value="">Select Repair</option>
+                                <option value="screen">Screen Replacement</option>
+                                <option value="battery">Battery Replacement</option>
+                                <option value="charging">Charging Port</option>
+                                <option value="camera">Camera Repair</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="calculateQuote" class="btn btn-primary btn-full">
+                        <i class="fas fa-calculator"></i> Calculate Quote
+                    </button>
+                </div>
+
+                <div id="quoteResult" class="quote-result hidden">
+                    <div class="result-card">
+                        <h3>Estimated Cost</h3>
+                        <div class="price" id="estimatedPrice">GH₵ 0</div>
+                        <div class="time" id="estimatedTime">0 hours</div>
+                        <p class="note">This is an estimate. Final price may vary based on device model.</p>
+                        <a href="https://wa.me/233246912468" class="btn btn-primary">
+                            <i class="fab fa-whatsapp"></i> Confirm with WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Booking Section -->
+    <section id="booking" class="booking-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Book Repair Service</h2>
+                <p class="section-subtitle">Schedule your phone repair in 2 minutes</p>
+            </div>
+
+            <div class="booking-form-container">
+                <form id="bookingForm" class="booking-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="bookingName">Full Name *</label>
+                            <input type="text" id="bookingName" required placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingPhone">Phone Number *</label>
+                            <input type="tel" id="bookingPhone" required placeholder="0246912468">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingHostel">Hostel & Room *</label>
+                            <input type="text" id="bookingHostel" required placeholder="Republic Hall, Room 205">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingDevice">Device Model *</label>
+                            <input type="text" id="bookingDevice" required placeholder="iPhone 13 Pro">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingIssue">Issue Description *</label>
+                            <textarea id="bookingIssue" required placeholder="Describe the problem with your phone..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingUrgency">Urgency Level</label>
+                            <select id="bookingUrgency">
+                                <option value="standard">Standard (2-3 days)</option>
+                                <option value="express">Express (Same day)</option>
+                                <option value="emergency">Emergency (4-6 hours)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large btn-full">
+                        <i class="fas fa-calendar-check"></i> Book Repair Service
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repair Status Section -->
+    <section id="status" class="status-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Check Repair Status</h2>
+                <p class="section-subtitle">Track your repair progress in real-time</p>
+            </div>
+
+            <div class="status-checker">
+                <div class="search-box">
+                    <input type="text" id="statusCode" placeholder="Enter your repair code (e.g., CF-2024-2581)">
+                    <button id="checkStatus" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Check Status
+                    </button>
+                </div>
+                
+                <div id="statusResult" class="status-result">
+                    <!-- Status will be displayed here -->
+                </div>
+
+                <div class="demo-codes">
+                    <p>Try demo codes: <strong>CF-2024-2581</strong> (In Progress) or <strong>CF-2024-1924</strong> (Completed)</p>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- Testimonials Section -->
     <section id="testimonials" class="testimonials">
         <div class="container">
