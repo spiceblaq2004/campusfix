@@ -1179,3 +1179,46 @@ h4 { font-size: var(--text-2xl); }
     padding: var(--space-lg);
   }
 }
+
+/* ================================
+   MOBILE TEXT SPACING FIXES
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Improve overall text spacing on mobile */
+  body {
+    line-height: 1.6 !important;
+  }
+  
+  /* Better spacing for all containers */
+  .container {
+    padding-left: var(--space-md) !important;
+    padding-right: var(--space-md) !important;
+  }
+  
+  /* Improve hero section spacing */
+  .hero {
+    padding-top: 100px !important;
+    text-align: center !important;
+  }
+  
+  .hero .container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--space-xl) !important;
+  }
+  
+  /* Ensure proper text contrast and sizing */
+  .hero-description,
+  .section-subtitle {
+    color: var(--gray-300) !important;
+    font-weight: 400 !important;
+  }
+  
+  /* Fix any overflow issues */
+  .hero-title,
+  .section-title {
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+  }
+}
