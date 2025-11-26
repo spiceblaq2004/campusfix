@@ -1,5 +1,5 @@
 // ================================
-// FRONTEND-ONLY SYSTEMS - COMPLETE FIXED VERSION
+// ENHANCED FRONTEND-ONLY SYSTEMS
 // ================================
 
 class CampusFixSystems {
@@ -39,7 +39,7 @@ class CampusFixSystems {
     }
 
     // ================================
-    // QUOTE CALCULATOR SYSTEM - COMPLETELY FIXED
+    // QUOTE CALCULATOR SYSTEM - FIXED
     // ================================
 
     setupQuoteCalculator() {
@@ -139,50 +139,35 @@ class CampusFixSystems {
                 'battery': { min: 120, max: 250, time: '1-2 hours', urgency: 'Fast' },
                 'charging': { min: 80, max: 180, time: '2-3 hours', urgency: 'Standard' },
                 'camera': { min: 150, max: 400, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 200, max: 500, time: '1-2 days', urgency: 'Complex' },
-                'software': { min: 50, max: 150, time: '1-2 hours', urgency: 'Fast' },
-                'backglass': { min: 100, max: 300, time: '2-3 hours', urgency: 'Standard' },
-                'speaker': { min: 60, max: 150, time: '1-2 hours', urgency: 'Fast' }
+                'water': { min: 200, max: 500, time: '1-2 days', urgency: 'Complex' }
             },
             'Samsung': {
                 'screen': { min: 250, max: 500, time: '2-4 hours', urgency: 'Popular' },
                 'battery': { min: 100, max: 200, time: '1-2 hours', urgency: 'Fast' },
                 'charging': { min: 70, max: 150, time: '2-3 hours', urgency: 'Standard' },
                 'camera': { min: 120, max: 300, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 150, max: 400, time: '1-2 days', urgency: 'Complex' },
-                'software': { min: 40, max: 120, time: '1-2 hours', urgency: 'Fast' },
-                'backglass': { min: 80, max: 200, time: '2-3 hours', urgency: 'Standard' },
-                'speaker': { min: 50, max: 120, time: '1-2 hours', urgency: 'Fast' }
+                'water': { min: 150, max: 400, time: '1-2 days', urgency: 'Complex' }
             },
             'Huawei': {
                 'screen': { min: 200, max: 450, time: '2-4 hours', urgency: 'Popular' },
                 'battery': { min: 90, max: 180, time: '1-2 hours', urgency: 'Fast' },
                 'charging': { min: 60, max: 130, time: '2-3 hours', urgency: 'Standard' },
                 'camera': { min: 100, max: 280, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 120, max: 350, time: '1-2 days', urgency: 'Complex' },
-                'software': { min: 40, max: 100, time: '1-2 hours', urgency: 'Fast' },
-                'backglass': { min: 70, max: 180, time: '2-3 hours', urgency: 'Standard' },
-                'speaker': { min: 45, max: 110, time: '1-2 hours', urgency: 'Fast' }
+                'water': { min: 120, max: 350, time: '1-2 days', urgency: 'Complex' }
             },
             'Tecno': {
                 'screen': { min: 180, max: 350, time: '2-4 hours', urgency: 'Popular' },
                 'battery': { min: 80, max: 150, time: '1-2 hours', urgency: 'Fast' },
                 'charging': { min: 50, max: 120, time: '2-3 hours', urgency: 'Standard' },
                 'camera': { min: 90, max: 220, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 100, max: 300, time: '1-2 days', urgency: 'Complex' },
-                'software': { min: 30, max: 80, time: '1-2 hours', urgency: 'Fast' },
-                'backglass': { min: 60, max: 150, time: '2-3 hours', urgency: 'Standard' },
-                'speaker': { min: 40, max: 90, time: '1-2 hours', urgency: 'Fast' }
+                'water': { min: 100, max: 300, time: '1-2 days', urgency: 'Complex' }
             },
             'Other': {
                 'screen': { min: 150, max: 400, time: '2-4 hours', urgency: 'Popular' },
                 'battery': { min: 70, max: 160, time: '1-2 hours', urgency: 'Fast' },
                 'charging': { min: 55, max: 130, time: '2-3 hours', urgency: 'Standard' },
                 'camera': { min: 80, max: 250, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 90, max: 320, time: '1-2 days', urgency: 'Complex' },
-                'software': { min: 35, max: 90, time: '1-2 hours', urgency: 'Fast' },
-                'backglass': { min: 65, max: 170, time: '2-3 hours', urgency: 'Standard' },
-                'speaker': { min: 35, max: 100, time: '1-2 hours', urgency: 'Fast' }
+                'water': { min: 90, max: 320, time: '1-2 days', urgency: 'Complex' }
             }
         };
 
@@ -269,16 +254,13 @@ class CampusFixSystems {
             'battery': 'Battery Replacement',
             'charging': 'Charging Port Repair',
             'camera': 'Camera Repair',
-            'water': 'Water Damage Repair',
-            'software': 'Software Issues',
-            'backglass': 'Back Glass Replacement',
-            'speaker': 'Speaker/Microphone Repair'
+            'water': 'Water Damage Repair'
         };
         return names[repair] || repair;
     }
 
     // ================================
-    // BOOKING SYSTEM - WORKING VERSION
+    // BOOKING SYSTEM - ENHANCED
     // ================================
 
     setupBookingSystem() {
@@ -299,7 +281,6 @@ class CampusFixSystems {
         const formData = this.getBookingFormData();
         
         if (!this.validateBookingForm(formData)) {
-            this.showNotification('Please fill in all required fields correctly', 'error');
             return;
         }
 
@@ -317,7 +298,7 @@ class CampusFixSystems {
             // Save to localStorage
             this.saveBooking(booking);
             
-            // 🚀 SEND TO WHATSAPP - THIS IS WHAT MATTERS
+            // Send to WhatsApp
             this.sendBookingToWhatsApp(booking);
             
             // Track booking
@@ -372,7 +353,7 @@ class CampusFixSystems {
     sendBookingToWhatsApp(booking) {
         console.log('📤 Sending booking to WhatsApp...', booking);
         
-        // Format the message EXACTLY as you want it
+        // Format the message
         const message = `📱 *NEW PHONE REPAIR BOOKING - CampusFix UENR* 📱
 
 👤 *CUSTOMER INFORMATION*
@@ -396,12 +377,12 @@ ${booking.issue}
 
 💬 *I'm ready for pickup!*`;
 
-        // Create WhatsApp URL - USING YOUR ACTUAL NUMBER
+        // Create WhatsApp URL
         const whatsappUrl = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
         
         console.log('🔗 WhatsApp URL created:', whatsappUrl);
         
-        // 🎯 THIS IS WHAT SENDS IT TO YOUR WHATSAPP
+        // Open WhatsApp
         window.open(whatsappUrl, '_blank');
         
         // Show success message
