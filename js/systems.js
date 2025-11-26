@@ -42,222 +42,426 @@ class CampusFixSystems {
     // QUOTE CALCULATOR SYSTEM - FIXED
     // ================================
 
-    setupQuoteCalculator() {
-        console.log('🔧 Setting up fixed quote calculator...');
-        
-        const calculateBtn = document.getElementById('calculateQuote');
-        const brandSelect = document.getElementById('calcBrand');
-        const repairSelect = document.getElementById('calcRepair');
-        
-        if (calculateBtn && brandSelect && repairSelect) {
-            // Add event listeners
-            brandSelect.addEventListener('change', () => {
-                this.updateQuoteButtonState();
-            });
-            
-            repairSelect.addEventListener('change', () => {
-                this.updateQuoteButtonState();
-            });
-            
-            calculateBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.calculateQuote();
-            });
-            
-            // Initialize button state
-            this.updateQuoteButtonState();
-            
-            console.log('✅ Quote calculator setup complete');
-        } else {
-            console.error('❌ Quote calculator elements not found');
-        }
-    }
+    getModelsByBrand(brand) {
+    const models = {
+        'Tecno': [
+            'Spark Series (Spark 20/19/18)',
+            'Camon Series (Camon 20/19/18)',
+            'Phantom Series (Phantom X2/V)',
+            'Pova Series (Pova 5/4/3)',
+            'Pop Series (Pop 8/7/6)',
+            'Tecno Megabook',
+            'Other Tecno Model'
+        ],
+        'Infinix': [
+            'Note Series (Note 40/30/20)',
+            'Hot Series (Hot 40/30/20)',
+            'Zero Series (Zero 30/20/X)',
+            'Smart Series (Smart 8/7/6)',
+            'Infinix GT Series',
+            'Infinix Book',
+            'Other Infinix Model'
+        ],
+        'Itel': [
+            'Vision Series (Vision 5/4/3)',
+            'S Series (S23/S22/S21)',
+            'P Series (P40/P37/P32)',
+            'A Series (A70/A60/A50)',
+            'Itel Prime Series',
+            'Itel Power Series',
+            'Other Itel Model'
+        ],
+        'iPhone': [
+            'iPhone 15 Series (15/15 Plus)',
+            'iPhone 15 Pro Series (Pro/Pro Max)',
+            'iPhone 14 Series (14/14 Plus)',
+            'iPhone 14 Pro Series (Pro/Pro Max)',
+            'iPhone 13 Series (13/13 Mini)',
+            'iPhone 12 Series (12/12 Mini)',
+            'iPhone 11 & Older Models'
+        ],
+        'Samsung': [
+            'Galaxy S Series (S24/S23/S22)',
+            'Galaxy S Ultra (S24/S23 Ultra)',
+            'Galaxy A Series (A54/A34/A14)',
+            'Galaxy M Series (M54/M34/M14)',
+            'Galaxy Note Series',
+            'Galaxy Z Fold/Flip',
+            'Other Samsung Model'
+        ],
+        'Nokia': [
+            'Nokia G Series (G42/G22)',
+            'Nokia C Series (C32/C22)',
+            'Nokia X Series (X30/X20)',
+            'Nokia 5.4 / 6.2 / 7.2',
+            'Nokia 3.4 / 2.4',
+            'Nokia 1.4 / 1.3',
+            'Other Nokia Model'
+        ],
+        'Xiaomi': [
+            'Redmi Note Series (13/12/11)',
+            'Redmi Series (13/12/11)',
+            'Poco X Series (X6/X5/X4)',
+            'Poco M Series (M6/M5/M4)',
+            'Xiaomi 13/12/11 Series',
+            'Xiaomi Pad Series',
+            'Other Xiaomi Model'
+        ],
+        'Other': [
+            'Oppo Reno Series',
+            'Oppo A Series',
+            'Realme Number Series',
+            'Realme Narzo Series',
+            'Vivo V Series',
+            'Vivo Y Series',
+            'Other Brand Model'
+        ]
+    };
+    
+    return models[brand] || ['Other Model'];
+}
 
-    updateQuoteButtonState() {
-        const brand = document.getElementById('calcBrand')?.value;
-        const repair = document.getElementById('calcRepair')?.value;
-        const calculateBtn = document.getElementById('calculateQuote');
-        
-        if (!calculateBtn) return;
-        
-        if (brand && repair) {
-            calculateBtn.disabled = false;
-            calculateBtn.classList.remove('btn-disabled');
-            calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> Calculate Repair Cost';
-        } else {
-            calculateBtn.disabled = true;
-            calculateBtn.classList.add('btn-disabled');
-            calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> Select Options First';
-        }
-    }
-
-    calculateQuote() {
-        console.log('🧮 Calculating quote...');
-        
-        const brand = document.getElementById('calcBrand')?.value;
-        const repair = document.getElementById('calcRepair')?.value;
-        
-        console.log('📱 Selected:', { brand, repair });
-        
-        if (!brand || !repair) {
-            this.showNotification('Please select both phone brand and repair type', 'error');
-            return;
-        }
-
-        // Add loading state
-        const calculateBtn = document.getElementById('calculateQuote');
-        const originalText = calculateBtn.innerHTML;
-        calculateBtn.classList.add('btn-loading');
-        calculateBtn.disabled = true;
-
-        // Simulate calculation delay
-        setTimeout(() => {
-            try {
-                const quote = this.getQuotePrice(brand, repair);
-                this.displayQuote(quote);
-                
-                // Track quote calculation
-                this.trackEvent('quote_calculated', `${brand}_${repair}`);
-            } catch (error) {
-                console.error('Quote calculation error:', error);
-                this.showNotification('Error calculating quote. Please try again.', 'error');
-            } finally {
-                // Restore button
-                calculateBtn.classList.remove('btn-loading');
-                calculateBtn.innerHTML = originalText;
-                calculateBtn.disabled = false;
-                this.updateQuoteButtonState();
+getEnhancedQuotePrice(brand, model, repair) {
+    // Enhanced price matrix with model-specific pricing for all brands
+    const priceMatrix = {
+        'Tecno': {
+            'Spark Series': {
+                'screen': { min: 180, max: 280, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 70, max: 120, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 50, max: 90, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 80, max: 150, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 60, max: 100, time: '1-2 hours', urgency: 'Standard' },
+                'speaker': { min: 40, max: 70, time: '1-2 hours', urgency: 'Fast' }
+            },
+            'Camon Series': {
+                'screen': { min: 220, max: 350, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 90, max: 150, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 65, max: 110, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 100, max: 200, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 70, max: 130, time: '1-2 hours', urgency: 'Standard' },
+                'speaker': { min: 45, max: 80, time: '1-2 hours', urgency: 'Fast' }
+            },
+            'Phantom Series': {
+                'screen': { min: 320, max: 500, time: '2-4 hours', urgency: 'Premium' },
+                'battery': { min: 120, max: 200, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 85, max: 150, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 140, max: 280, time: '2-4 hours', urgency: 'Expert' },
+                'backglass': { min: 100, max: 180, time: '2-3 hours', urgency: 'Premium' },
+                'speaker': { min: 60, max: 100, time: '1-2 hours', urgency: 'Fast' }
+            },
+            'Pova Series': {
+                'screen': { min: 200, max: 320, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 80, max: 140, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 60, max: 100, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 90, max: 170, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 65, max: 110, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'Pop Series': {
+                'screen': { min: 150, max: 240, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 60, max: 100, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 45, max: 80, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 70, max: 120, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 50, max: 85, time: '1-2 hours', urgency: 'Standard' }
             }
-        }, 1000);
-    }
-
-    getQuotePrice(brand, repair) {
-        // Enhanced price matrix with more brands and repairs
-        const priceMatrix = {
-            'iPhone': {
-                'screen': { min: 300, max: 600, time: '2-4 hours', urgency: 'Popular' },
-                'battery': { min: 120, max: 250, time: '1-2 hours', urgency: 'Fast' },
-                'charging': { min: 80, max: 180, time: '2-3 hours', urgency: 'Standard' },
-                'camera': { min: 150, max: 400, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 200, max: 500, time: '1-2 days', urgency: 'Complex' }
+        },
+        'Infinix': {
+            'Note Series': {
+                'screen': { min: 200, max: 320, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 85, max: 140, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 60, max: 110, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 95, max: 180, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 70, max: 120, time: '1-2 hours', urgency: 'Standard' }
             },
-            'Samsung': {
-                'screen': { min: 250, max: 500, time: '2-4 hours', urgency: 'Popular' },
-                'battery': { min: 100, max: 200, time: '1-2 hours', urgency: 'Fast' },
-                'charging': { min: 70, max: 150, time: '2-3 hours', urgency: 'Standard' },
-                'camera': { min: 120, max: 300, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 150, max: 400, time: '1-2 days', urgency: 'Complex' }
+            'Hot Series': {
+                'screen': { min: 170, max: 270, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 75, max: 120, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 55, max: 95, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 80, max: 150, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 60, max: 100, time: '1-2 hours', urgency: 'Standard' }
             },
-            'Huawei': {
-                'screen': { min: 200, max: 450, time: '2-4 hours', urgency: 'Popular' },
-                'battery': { min: 90, max: 180, time: '1-2 hours', urgency: 'Fast' },
-                'charging': { min: 60, max: 130, time: '2-3 hours', urgency: 'Standard' },
-                'camera': { min: 100, max: 280, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 120, max: 350, time: '1-2 days', urgency: 'Complex' }
+            'Zero Series': {
+                'screen': { min: 280, max: 450, time: '2-4 hours', urgency: 'Premium' },
+                'battery': { min: 110, max: 180, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 80, max: 140, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 130, max: 250, time: '2-4 hours', urgency: 'Expert' },
+                'backglass': { min: 90, max: 160, time: '2-3 hours', urgency: 'Premium' }
             },
-            'Tecno': {
-                'screen': { min: 180, max: 350, time: '2-4 hours', urgency: 'Popular' },
-                'battery': { min: 80, max: 150, time: '1-2 hours', urgency: 'Fast' },
-                'charging': { min: 50, max: 120, time: '2-3 hours', urgency: 'Standard' },
-                'camera': { min: 90, max: 220, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 100, max: 300, time: '1-2 days', urgency: 'Complex' }
-            },
-            'Other': {
-                'screen': { min: 150, max: 400, time: '2-4 hours', urgency: 'Popular' },
-                'battery': { min: 70, max: 160, time: '1-2 hours', urgency: 'Fast' },
-                'charging': { min: 55, max: 130, time: '2-3 hours', urgency: 'Standard' },
-                'camera': { min: 80, max: 250, time: '2-4 hours', urgency: 'Expert' },
-                'water': { min: 90, max: 320, time: '1-2 days', urgency: 'Complex' }
+            'Smart Series': {
+                'screen': { min: 140, max: 220, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 65, max: 100, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 50, max: 80, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 70, max: 120, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 55, max: 90, time: '1-2 hours', urgency: 'Standard' }
             }
-        };
-
-        const brandData = priceMatrix[brand] || priceMatrix['Other'];
-        const repairKey = repair;
-        
-        if (!brandData) {
-            return { 
-                min: 100, 
-                max: 200, 
-                time: '2-4 hours', 
-                urgency: 'Standard',
-                brand: brand, 
-                repair: repair 
-            };
+        },
+        'Itel': {
+            'Vision Series': {
+                'screen': { min: 120, max: 190, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 50, max: 80, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 40, max: 65, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 60, max: 100, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 45, max: 70, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'S Series': {
+                'screen': { min: 140, max: 220, time: '2-3 hours', urgency: 'Standard' },
+                'battery': { min: 60, max: 95, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 45, max: 75, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 70, max: 120, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 50, max: 85, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'P Series': {
+                'screen': { min: 130, max: 200, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 55, max: 85, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 42, max: 70, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 65, max: 110, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 48, max: 75, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'A Series': {
+                'screen': { min: 110, max: 170, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 45, max: 70, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 35, max: 60, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 55, max: 90, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 40, max: 65, time: '1-2 hours', urgency: 'Standard' }
+            }
+        },
+        'iPhone': {
+            '15 Pro Series': {
+                'screen': { min: 900, max: 1500, time: '3-5 hours', urgency: 'Premium' },
+                'battery': { min: 280, max: 450, time: '2-3 hours', urgency: 'Standard' },
+                'charging': { min: 180, max: 320, time: '2-4 hours', urgency: 'Expert' },
+                'camera': { min: 400, max: 750, time: '3-5 hours', urgency: 'Expert' },
+                'backglass': { min: 350, max: 600, time: '2-4 hours', urgency: 'Premium' }
+            },
+            '15 Series': {
+                'screen': { min: 700, max: 1100, time: '3-4 hours', urgency: 'Premium' },
+                'battery': { min: 220, max: 350, time: '2-3 hours', urgency: 'Standard' },
+                'charging': { min: 150, max: 250, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 320, max: 600, time: '3-4 hours', urgency: 'Expert' },
+                'backglass': { min: 280, max: 480, time: '2-3 hours', urgency: 'Premium' }
+            },
+            '14 Pro Series': {
+                'screen': { min: 800, max: 1300, time: '3-4 hours', urgency: 'Premium' },
+                'battery': { min: 250, max: 400, time: '2-3 hours', urgency: 'Standard' },
+                'charging': { min: 160, max: 280, time: '2-4 hours', urgency: 'Expert' },
+                'camera': { min: 350, max: 650, time: '3-4 hours', urgency: 'Expert' },
+                'backglass': { min: 300, max: 520, time: '2-4 hours', urgency: 'Premium' }
+            },
+            '14 Series': {
+                'screen': { min: 600, max: 1000, time: '2-4 hours', urgency: 'Popular' },
+                'battery': { min: 200, max: 320, time: '2-3 hours', urgency: 'Standard' },
+                'charging': { min: 130, max: 220, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 280, max: 500, time: '2-4 hours', urgency: 'Expert' },
+                'backglass': { min: 220, max: 400, time: '2-3 hours', urgency: 'Standard' }
+            },
+            '13 Series': {
+                'screen': { min: 500, max: 850, time: '2-4 hours', urgency: 'Popular' },
+                'battery': { min: 180, max: 280, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 120, max: 200, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 250, max: 450, time: '2-4 hours', urgency: 'Expert' },
+                'backglass': { min: 200, max: 350, time: '2-3 hours', urgency: 'Standard' }
+            }
+        },
+        'Samsung': {
+            'Galaxy S Ultra': {
+                'screen': { min: 850, max: 1400, time: '3-4 hours', urgency: 'Premium' },
+                'battery': { min: 260, max: 420, time: '2-3 hours', urgency: 'Standard' },
+                'charging': { min: 170, max: 300, time: '2-4 hours', urgency: 'Expert' },
+                'camera': { min: 380, max: 700, time: '3-4 hours', urgency: 'Expert' },
+                'backglass': { min: 320, max: 550, time: '2-3 hours', urgency: 'Premium' }
+            },
+            'Galaxy S Series': {
+                'screen': { min: 650, max: 1000, time: '2-4 hours', urgency: 'Popular' },
+                'battery': { min: 210, max: 330, time: '2-3 hours', urgency: 'Standard' },
+                'charging': { min: 140, max: 240, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 300, max: 550, time: '2-4 hours', urgency: 'Expert' },
+                'backglass': { min: 240, max: 420, time: '2-3 hours', urgency: 'Standard' }
+            },
+            'Galaxy A Series': {
+                'screen': { min: 350, max: 550, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 120, max: 200, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 90, max: 160, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 150, max: 280, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 100, max: 180, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'Galaxy M Series': {
+                'screen': { min: 300, max: 480, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 110, max: 180, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 80, max: 140, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 130, max: 240, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 90, max: 150, time: '1-2 hours', urgency: 'Standard' }
+            }
+        },
+        'Nokia': {
+            'G Series': {
+                'screen': { min: 250, max: 400, time: '2-3 hours', urgency: 'Standard' },
+                'battery': { min: 100, max: 160, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 75, max: 130, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 120, max: 220, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 80, max: 140, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'C Series': {
+                'screen': { min: 200, max: 320, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 80, max: 130, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 60, max: 100, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 90, max: 170, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 65, max: 110, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'X Series': {
+                'screen': { min: 280, max: 450, time: '2-3 hours', urgency: 'Premium' },
+                'battery': { min: 110, max: 180, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 85, max: 150, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 140, max: 260, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 95, max: 170, time: '2-3 hours', urgency: 'Premium' }
+            }
+        },
+        'Xiaomi': {
+            'Redmi Note Series': {
+                'screen': { min: 280, max: 450, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 110, max: 180, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 80, max: 140, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 130, max: 250, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 90, max: 160, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'Redmi Series': {
+                'screen': { min: 220, max: 350, time: '2-3 hours', urgency: 'Standard' },
+                'battery': { min: 90, max: 150, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 65, max: 110, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 100, max: 190, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 70, max: 120, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'Poco X Series': {
+                'screen': { min: 300, max: 480, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 120, max: 190, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 85, max: 150, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 140, max: 260, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 95, max: 170, time: '2-3 hours', urgency: 'Standard' }
+            },
+            'Poco M Series': {
+                'screen': { min: 240, max: 380, time: '2-3 hours', urgency: 'Budget' },
+                'battery': { min: 95, max: 150, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 70, max: 120, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 110, max: 200, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 75, max: 130, time: '1-2 hours', urgency: 'Standard' }
+            }
+        },
+        'Other': {
+            'Oppo Reno Series': {
+                'screen': { min: 320, max: 500, time: '2-3 hours', urgency: 'Premium' },
+                'battery': { min: 120, max: 200, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 85, max: 150, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 140, max: 270, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 100, max: 180, time: '2-3 hours', urgency: 'Premium' }
+            },
+            'Realme Number Series': {
+                'screen': { min: 280, max: 440, time: '2-3 hours', urgency: 'Popular' },
+                'battery': { min: 110, max: 180, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 80, max: 140, time: '2-3 hours', urgency: 'Standard' },
+                'camera': { min: 130, max: 240, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 90, max: 160, time: '1-2 hours', urgency: 'Standard' }
+            },
+            'Vivo V Series': {
+                'screen': { min: 300, max: 470, time: '2-3 hours', urgency: 'Premium' },
+                'battery': { min: 115, max: 190, time: '1-2 hours', urgency: 'Fast' },
+                'charging': { min: 82, max: 145, time: '2-3 hours', urgency: 'Expert' },
+                'camera': { min: 135, max: 250, time: '2-3 hours', urgency: 'Expert' },
+                'backglass': { min: 95, max: 170, time: '2-3 hours', urgency: 'Premium' }
+            }
+        },
+        'Default': {
+            'screen': { min: 200, max: 350, time: '2-3 hours', urgency: 'Standard' },
+            'battery': { min: 80, max: 140, time: '1-2 hours', urgency: 'Fast' },
+            'charging': { min: 60, max: 110, time: '2-3 hours', urgency: 'Standard' },
+            'camera': { min: 100, max: 200, time: '2-3 hours', urgency: 'Expert' },
+            'backglass': { min: 70, max: 130, time: '1-2 hours', urgency: 'Standard' },
+            'speaker': { min: 50, max: 90, time: '1-2 hours', urgency: 'Fast' },
+            'water': { min: 150, max: 300, time: '1-2 days', urgency: 'Complex' },
+            'software': { min: 40, max: 80, time: '1-2 hours', urgency: 'Fast' },
+            'motherboard': { min: 250, max: 600, time: '2-3 days', urgency: 'Expert' }
         }
+    };
 
-        const price = brandData[repairKey] || { min: 100, max: 200, time: '2-4 hours', urgency: 'Standard' };
-        
-        return {
-            min: price.min,
-            max: price.max,
-            time: price.time,
-            urgency: price.urgency,
-            brand: brand,
-            repair: repair
-        };
+    // Determine phone category based on model name
+    let category = this.determinePhoneCategory(brand, model);
+    
+    // Get price for specific category or use default
+    const brandData = priceMatrix[brand];
+    let priceData;
+    
+    if (brandData && brandData[category] && brandData[category][repair]) {
+        priceData = brandData[category][repair];
+    } else if (brandData && brandData[repair]) {
+        priceData = brandData[repair];
+    } else {
+        priceData = priceMatrix['Default'][repair] || priceMatrix['Default']['screen'];
     }
 
-    displayQuote(quote) {
-        const resultDiv = document.getElementById('quoteResult');
-        const priceElement = document.getElementById('estimatedPrice');
-        const timeElement = document.getElementById('estimatedTime');
-        const badgeElement = document.getElementById('resultBadge');
-        const whatsappBtn = document.getElementById('whatsappQuote');
-        
-        if (!resultDiv || !priceElement || !timeElement) {
-            console.error('❌ Quote result elements not found!');
-            this.showNotification('Error displaying quote result', 'error');
-            return;
-        }
+    return {
+        min: priceData.min,
+        max: priceData.max,
+        time: priceData.time,
+        urgency: priceData.urgency,
+        brand: brand,
+        model: model,
+        repair: repair,
+        category: category
+    };
+}
 
-        // Update content
-        priceElement.textContent = `GH₵ ${quote.min} - GH₵ ${quote.max}`;
-        timeElement.textContent = quote.time;
-        badgeElement.textContent = `${quote.urgency} Repair`;
-        
-        // Update WhatsApp link with quote info
-        if (whatsappBtn) {
-            const repairName = this.getRepairDisplayName(quote.repair);
-            const message = `Hello! I'd like a quote for:\n\n📱 *Repair Details:*\n• Phone: ${quote.brand}\n• Repair: ${repairName}\n• Estimated Cost: GH₵ ${quote.min}-${quote.max}\n• Time: ${quote.time}\n\nPlease provide exact pricing and availability.`;
-            whatsappBtn.href = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
+determinePhoneCategory(brand, model) {
+    // Default category mapping
+    const categoryMap = {
+        'Tecno': {
+            'Spark Series': 'Spark Series',
+            'Camon Series': 'Camon Series', 
+            'Phantom Series': 'Phantom Series',
+            'Pova Series': 'Pova Series',
+            'Pop Series': 'Pop Series'
+        },
+        'Infinix': {
+            'Note Series': 'Note Series',
+            'Hot Series': 'Hot Series',
+            'Zero Series': 'Zero Series', 
+            'Smart Series': 'Smart Series'
+        },
+        'Itel': {
+            'Vision Series': 'Vision Series',
+            'S Series': 'S Series',
+            'P Series': 'P Series',
+            'A Series': 'A Series'
+        },
+        'iPhone': {
+            '15 Pro Series': '15 Pro Series',
+            '15 Series': '15 Series',
+            '14 Pro Series': '14 Pro Series',
+            '14 Series': '14 Series',
+            '13 Series': '13 Series'
+        },
+        'Samsung': {
+            'Galaxy S Ultra': 'Galaxy S Ultra',
+            'Galaxy S Series': 'Galaxy S Series',
+            'Galaxy A Series': 'Galaxy A Series',
+            'Galaxy M Series': 'Galaxy M Series'
+        },
+        'Nokia': {
+            'G Series': 'G Series',
+            'C Series': 'C Series', 
+            'X Series': 'X Series'
+        },
+        'Xiaomi': {
+            'Redmi Note Series': 'Redmi Note Series',
+            'Redmi Series': 'Redmi Series',
+            'Poco X Series': 'Poco X Series',
+            'Poco M Series': 'Poco M Series'
+        },
+        'Other': {
+            'Oppo Reno Series': 'Oppo Reno Series',
+            'Realme Number Series': 'Realme Number Series',
+            'Vivo V Series': 'Vivo V Series'
         }
-        
-        // Show result with animation
-        resultDiv.classList.remove('hidden');
-        resultDiv.style.animation = 'fadeInUp 0.6s ease';
-        
-        // Add calculate again button functionality
-        const calculateAgainBtn = document.getElementById('calculateAgain');
-        if (calculateAgainBtn) {
-            calculateAgainBtn.onclick = () => {
-                resultDiv.classList.add('hidden');
-                document.getElementById('calcBrand').value = '';
-                document.getElementById('calcRepair').value = '';
-                this.updateQuoteButtonState();
-            };
-        }
-        
-        // Scroll to result smoothly
-        setTimeout(() => {
-            resultDiv.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
-        }, 300);
-        
-        console.log('✅ Quote displayed successfully:', quote);
-    }
+    };
 
-    getRepairDisplayName(repair) {
-        const names = {
-            'screen': 'Screen Replacement',
-            'battery': 'Battery Replacement',
-            'charging': 'Charging Port Repair',
-            'camera': 'Camera Repair',
-            'water': 'Water Damage Repair'
-        };
-        return names[repair] || repair;
-    }
+    return categoryMap[brand]?.[model] || 'Standard Models';
+}
 
     // ================================
     // BOOKING SYSTEM - ENHANCED
