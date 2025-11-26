@@ -322,37 +322,43 @@
                 <p class="section-subtitle">Check estimated repair costs in seconds</p>
             </div>
 
-            <<!-- In the quote calculator section, update the form-grid div: -->
-<div class="form-grid">
-    <div class="form-group">
-        <label for="calcBrand">
-            <i class="fas fa-mobile-alt"></i>
-            Phone Brand
-        </label>
-        <select id="calcBrand" required>
-            <option value="">Select Brand</option>
-            <option value="iPhone">iPhone</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Huawei">Huawei</option>
-            <option value="Tecno">Tecno</option>
-            <option value="Other">Other Brand</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="calcRepair">
-            <i class="fas fa-tools"></i>
-            Repair Type
-        </label>
-        <select id="calcRepair" required>
-            <option value="">Select Repair</option>
-            <option value="screen">Screen Replacement</option>
-            <option value="battery">Battery Replacement</option>
-            <option value="charging">Charging Port</option>
-            <option value="camera">Camera Repair</option>
-            <option value="water">Water Damage</option>
-        </select>
-    </div>
-</div>
+            <div class="quote-calculator">
+                <div class="calculator-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="calcBrand">
+                                <i class="fas fa-mobile-alt"></i>
+                                Phone Brand
+                            </label>
+                            <select id="calcBrand" required>
+                                <option value="">Select Brand</option>
+                                <option value="iPhone">iPhone</option>
+                                <option value="Samsung">Samsung</option>
+                                <option value="Huawei">Huawei</option>
+                                <option value="Tecno">Tecno</option>
+                                <option value="Other">Other Brand</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="calcRepair">
+                                <i class="fas fa-tools"></i>
+                                Repair Type
+                            </label>
+                            <select id="calcRepair" required>
+                                <option value="">Select Repair</option>
+                                <option value="screen">Screen Replacement</option>
+                                <option value="battery">Battery Replacement</option>
+                                <option value="charging">Charging Port</option>
+                                <option value="camera">Camera Repair</option>
+                                <option value="water">Water Damage</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" id="calculateQuote" class="btn btn-primary btn-large btn-full">
+                        <i class="fas fa-calculator"></i> Calculate Repair Cost
+                    </button>
+                </div>
+
                 <div id="quoteResult" class="quote-result hidden">
                     <div class="result-card animate-bounceIn">
                         <div class="result-header">
