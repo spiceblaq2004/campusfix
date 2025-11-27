@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFix Admin - Repair Status Updates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 20px;
+        }
+        
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #6366f1;
+        }
+        
+        .admin-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+        
+        .admin-section h2 {
+            margin-bottom: 15px;
+            color: #f8fafc;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: #f8fafc;
+            font-size: 16px;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #4f46e5;
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        
+        .status-update {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #10b981;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .repair-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .repair-item {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #6366f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>🔧 CampusFix Repair Status Admin</h1>
+        
+        <div class="admin-section">
+            <h2>Update Repair Status</h2>
+            <div class="form-group">
+                <label for="repairCode">Repair Code:</label>
+                <input type="text" id="repairCode" placeholder="e.g., CF-2024-0001">
+            </div>
+            
+            <div class="quick-actions">
+                <button onclick="markDiagnosis()" class="btn-success">Mark Diagnosis Complete</button>
+                <button onclick="markRepairStart()" class="btn-warning">Mark Repair Started</button>
+                <button onclick="markRepairComplete()" class="btn-success">Mark Repair Completed</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="statusNotes">Technician Notes:</label>
+                <textarea id="statusNotes" placeholder="Add any notes about the repair..."></textarea>
+            </div>
+            
+            <button onclick="updateStatus()">Update Status</button>
+        </div>
+        
+        <div class="admin-section">
+            <h2>Current Repairs</h2>
+            <div id="repairList" class="repair-list">
+                <!-- Repairs will be listed here -->
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <h2>Status Update Log</h2>
+            <div id="statusLog">
+                <!-- Status updates will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load systems.js first
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // Initialize admin panel after systems.js loads
+        loadScript('js/systems.js').then(() => {
+            console.log('Admin panel initialized');
+            loadRepairs();
+        });
+
+        function loadRepairs() {
+            const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+            const repairList = document.getElementById('repairList');
+            
+            repairList.innerHTML = '';
+            
+            if (Object.keys(bookings).length === 0) {
+                repairList.innerHTML = '<p>No repairs found</p>';
+                return;
+            }
+            
+            Object.values(bookings).forEach(booking => {
+                const repairItem = document.createElement('div');
+                repairItem.className = 'repair-item';
+                repairItem.innerHTML = `
+                    <strong>${booking.code}</strong> - ${booking.device}
+                    <br><small>Status: ${booking.status} | Progress: ${booking.progress}%</small>
+                    <br><small>Customer: ${booking.name}</small>
+                `;
+                repairItem.onclick = () => {
+                    document.getElementById('repairCode').value = booking.code;
+                };
+                repairList.appendChild(repairItem);
+            });
+        }
+
+        function markDiagnosis() {
+            const code = document.getElementById('repairCode').value;
+            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
+            
+            if (!code) {
+                alert('Please enter a repair code');
+                return;
+            }
+            
+            if (window.markDiagnosisComplete(code, notes)) {
+                logStatus(`Diagnosis marked complete for ${code}`);
+                loadRepairs();
+                document.getElementById('statusNotes').value = '';
+            }
+        }
+
+        function markRepairStart() {
+            const code = document.getElementById('repairCode').value;
+            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
+            
+            if (!code) {
+                alert('Please enter a repair code');
+                return;
+            }
+            
+            if (window.markRepairInProgress(code, notes)) {
+                logStatus(`Repair marked as in progress for ${code}`);
+                loadRepairs();
+                document.getElementById('statusNotes').value = '';
+            }
+        }
+
+        function markRepairComplete() {
+            const code = document.getElementById('repairCode').value;
+            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
+            
+            if (!code) {
+                alert('Please enter a repair code');
+                return;
+            }
+            
+            if (window.markRepairCompleted(code, notes)) {
+                logStatus(`Repair marked as completed for ${code}`);
+                loadRepairs();
+                document.getElementById('statusNotes').value = '';
+            }
+        }
+
+        function updateStatus() {
+            const code = document.getElementById('repairCode').value;
+            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
+            
+            if (!code) {
+                alert('Please enter a repair code');
+                return;
+            }
+            
+            // Simple status update
+            if (window.updateRepairStatus(code, 'Updated', notes)) {
+                logStatus(`Status updated for ${code}`);
+                loadRepairs();
+                document.getElementById('statusNotes').value = '';
+            }
+        }
+
+        function logStatus(message) {
+            const log = document.getElementById('statusLog');
+            const update = document.createElement('div');
+            update.className = 'status-update';
+            update.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+            log.insertBefore(update, log.firstChild);
+        }
+    </script>
+</body>
+</html>
