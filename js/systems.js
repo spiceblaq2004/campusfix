@@ -1496,3 +1496,50 @@ window.markRepairInProgress = function(code, notes = []) {
 window.markRepairCompleted = function(code, notes = []) {
     return window.campusFixSystems.markRepairCompleted(code, notes);
 };
+
+// ================================
+// ENHANCED ADMIN FUNCTIONS
+// ================================
+
+// Make admin functions globally available
+window.updateRepairStatus = function(code, status, notes = []) {
+    if (!window.campusFixSystems) {
+        console.error('CampusFix systems not loaded');
+        return false;
+    }
+    return window.campusFixSystems.updateRepairStatus(code, { status, notes });
+};
+
+window.markDiagnosisComplete = function(code, notes = []) {
+    if (!window.campusFixSystems) {
+        console.error('CampusFix systems not loaded');
+        return false;
+    }
+    return window.campusFixSystems.markDiagnosisComplete(code, notes);
+};
+
+window.markRepairInProgress = function(code, notes = []) {
+    if (!window.campusFixSystems) {
+        console.error('CampusFix systems not loaded');
+        return false;
+    }
+    return window.campusFixSystems.markRepairInProgress(code, notes);
+};
+
+window.markRepairCompleted = function(code, notes = []) {
+    if (!window.campusFixSystems) {
+        console.error('CampusFix systems not loaded');
+        return false;
+    }
+    return window.campusFixSystems.markRepairCompleted(code, notes);
+};
+
+// Initialize demo data if no repairs exist
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+        if (Object.keys(bookings).length === 0) {
+            console.log('💡 No repairs found. Demo repairs will be created when bookings are made.');
+        }
+    }, 2000);
+});
