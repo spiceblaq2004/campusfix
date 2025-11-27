@@ -39,11 +39,11 @@ class CampusFixSystems {
     }
 
     // ================================
-    // FIXED QUOTE CALCULATOR SYSTEM
+    // ENHANCED QUOTE CALCULATOR SYSTEM - FIXED
     // ================================
 
     setupQuoteCalculator() {
-        console.log('🔧 Setting up fixed quote calculator...');
+        console.log('🔧 Setting up enhanced quote calculator...');
         
         const brandSelect = document.getElementById('calcBrand');
         const modelSelect = document.getElementById('calcModel');
@@ -56,7 +56,7 @@ class CampusFixSystems {
             // Initialize dropdowns
             this.initializeDropdowns();
             
-            // Brand change event - FIXED
+            // Brand change event
             brandSelect.addEventListener('change', (e) => {
                 const brand = e.target.value;
                 console.log('📱 Brand selected:', brand);
@@ -64,7 +64,7 @@ class CampusFixSystems {
                 this.updateQuoteButtonState();
             });
             
-            // Model change event - FIXED
+            // Model change event
             modelSelect.addEventListener('change', (e) => {
                 const model = e.target.value;
                 console.log('📱 Model selected:', model);
@@ -84,7 +84,7 @@ class CampusFixSystems {
                 this.calculateQuote();
             });
             
-            console.log('✅ Fixed quote calculator setup complete');
+            console.log('✅ Enhanced quote calculator setup complete');
         } else {
             console.error('❌ Quote calculator elements not found:', {
                 brandSelect: !!brandSelect,
@@ -298,7 +298,7 @@ class CampusFixSystems {
     }
 
     calculateQuote() {
-        console.log('🧮 Calculating quote...');
+        console.log('🧮 Calculating enhanced quote...');
         
         const brand = document.getElementById('calcBrand')?.value;
         const model = document.getElementById('calcModel')?.value;
@@ -665,6 +665,55 @@ class CampusFixSystems {
         return true;
     }
 
+    createBooking(code, data) {
+        return {
+            code: code,
+            ...data,
+            status: 'received',
+            progress: 10,
+            createdAt: new Date().toISOString(),
+            steps: {
+                received: { 
+                    time: new Date().toLocaleString('en-GB', { 
+                        weekday: 'short', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    }), 
+                    completed: true 
+                },
+                diagnosis: { time: 'Pending', completed: false },
+                parts: { time: 'Pending', completed: false },
+                repair: { time: 'Pending', completed: false },
+                testing: { time: 'Pending', completed: false },
+                quality: { time: 'Pending', completed: false },
+                ready: { time: 'Pending', completed: false }
+            },
+            notes: [
+                `Device received: ${data.device}`,
+                `Issue reported: ${data.issue}`
+            ],
+            estimatedCompletion: this.calculateEstimatedCompletion(data.urgency)
+        };
+    }
+
+    calculateEstimatedCompletion(urgency) {
+        const now = new Date();
+        const completionTimes = {
+            'emergency': 6, // hours
+            'express': 24, // hours
+            'standard': 72 // hours
+        };
+        
+        const hours = completionTimes[urgency] || 72;
+        const completionDate = new Date(now.getTime() + hours * 60 * 60 * 1000);
+        
+        return completionDate.toLocaleString('en-GB', {
+            weekday: 'long',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
     sendBookingToWhatsApp(booking) {
         console.log('📤 Sending booking to WhatsApp...', booking);
         
@@ -681,6 +730,7 @@ class CampusFixSystems {
 • 📱 *Device:* ${booking.device}
 • ⚡ *Urgency:* ${this.getUrgencyDisplay(booking.urgency)}
 • 🕒 *Booked:* ${booking.timestamp}
+• ⏰ *Estimated Completion:* ${booking.estimatedCompletion}
 
 🔧 *ISSUE DESCRIPTION:*
 ${booking.issue}
@@ -714,6 +764,15 @@ ${booking.issue}
             'emergency': 'Emergency (4-6 hours) +GH₵50'
         };
         return urgencyMap[urgency] || urgency;
+    }
+
+    getUrgencyTime(urgency) {
+        const timeMap = {
+            'standard': '2-3 days',
+            'express': 'Same day',
+            'emergency': '4-6 hours'
+        };
+        return timeMap[urgency] || '2-3 days';
     }
 
     showCustomerConfirmation(booking) {
@@ -751,6 +810,15 @@ ${booking.issue}
                             <i class="fas fa-tools" style="color: #6366f1; width: 20px;"></i>
                             <span>${this.getUrgencyTime(booking.urgency)} repair service</span>
                         </div>
+                    </div>
+
+                    <div style="background: rgba(245, 158, 11, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                        <h4 style="color: #f59e0b; margin-bottom: 10px; font-size: 16px;">
+                            <i class="fas fa-info-circle"></i> Track Your Repair
+                        </h4>
+                        <p style="color: #cbd5e1; font-size: 14px; margin: 0;">
+                            Use code <strong style="color: #f59e0b;">${booking.code}</strong> to check repair status anytime on our website
+                        </p>
                     </div>
                     
                     <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-direction: column;">
@@ -796,36 +864,10 @@ ${booking.issue}
         });
     }
 
-    getUrgencyTime(urgency) {
-        const timeMap = {
-            'standard': '2-3 days',
-            'express': 'Same day',
-            'emergency': '4-6 hours'
-        };
-        return timeMap[urgency] || '2-3 days';
-    }
-
     generateBookingCode() {
         const counter = parseInt(localStorage.getItem('bookingCounter') || '0') + 1;
         localStorage.setItem('bookingCounter', counter.toString());
         return `CF-${new Date().getFullYear()}-${counter.toString().padStart(4, '0')}`;
-    }
-
-    createBooking(code, data) {
-        return {
-            code: code,
-            ...data,
-            status: 'pending',
-            progress: 10,
-            createdAt: new Date().toISOString(),
-            steps: {
-                received: new Date().toLocaleTimeString(),
-                diagnosis: 'Pending',
-                repair: 'Pending',
-                quality: 'Pending',
-                ready: 'Pending'
-            }
-        };
     }
 
     saveBooking(booking) {
@@ -840,12 +882,12 @@ ${booking.issue}
     }
 
     // ================================
-    // STATUS CHECKER SYSTEM
+    // ENHANCED STATUS CHECKER SYSTEM
     // ================================
 
     setupStatusChecker() {
         const checkBtn = document.getElementById('checkStatus');
-        console.log('🔧 Setting up status checker...', checkBtn);
+        console.log('🔧 Setting up enhanced status checker...', checkBtn);
         
         if (checkBtn) {
             checkBtn.addEventListener('click', () => {
@@ -908,7 +950,12 @@ ${booking.issue}
                 status: booking.status,
                 progress: booking.progress,
                 device: booking.device,
+                customerName: booking.name,
+                issue: booking.issue,
+                urgency: booking.urgency,
                 steps: booking.steps,
+                notes: booking.notes || [],
+                estimatedCompletion: booking.estimatedCompletion,
                 isDemo: false
             };
         }
@@ -923,13 +970,24 @@ ${booking.issue}
                 status: 'In Progress',
                 progress: 60,
                 device: 'iPhone 13 Pro',
+                customerName: 'Kwame Asante',
+                issue: 'Screen replacement - cracked display',
+                urgency: 'express',
                 steps: {
-                    received: '10:30 AM',
-                    diagnosis: '11:15 AM',
-                    repair: 'In Progress',
-                    quality: 'Pending',
-                    ready: 'Pending'
+                    received: { time: 'Today, 10:30 AM', completed: true },
+                    diagnosis: { time: 'Today, 11:15 AM', completed: true },
+                    parts: { time: 'Parts ordered - arriving tomorrow', completed: false },
+                    repair: { time: 'In Progress', completed: false },
+                    testing: { time: 'Pending', completed: false },
+                    quality: { time: 'Pending', completed: false },
+                    ready: { time: 'Pending', completed: false }
                 },
+                notes: [
+                    'Original screen ordered',
+                    'Minor frame damage noted - will fix during repair',
+                    'Battery health checked - 85% (good condition)'
+                ],
+                estimatedCompletion: 'Tomorrow, 3:00 PM',
                 isDemo: true
             },
             'CF-2024-1924': {
@@ -937,13 +995,25 @@ ${booking.issue}
                 status: 'Completed',
                 progress: 100,
                 device: 'Samsung Galaxy S21',
+                customerName: 'Abena Kumi',
+                issue: 'Battery replacement - draining quickly',
+                urgency: 'standard',
                 steps: {
-                    received: '9:00 AM',
-                    diagnosis: '9:45 AM',
-                    repair: '10:30 AM',
-                    quality: '2:15 PM',
-                    ready: '3:00 PM'
+                    received: { time: 'Yesterday, 9:00 AM', completed: true },
+                    diagnosis: { time: 'Yesterday, 9:45 AM', completed: true },
+                    parts: { time: 'Yesterday, 10:15 AM', completed: true },
+                    repair: { time: 'Yesterday, 10:30 AM', completed: true },
+                    testing: { time: 'Yesterday, 2:00 PM', completed: true },
+                    quality: { time: 'Yesterday, 2:15 PM', completed: true },
+                    ready: { time: 'Yesterday, 3:00 PM', completed: true }
                 },
+                notes: [
+                    'Original Samsung battery installed',
+                    'Device cleaned internally',
+                    'Charging port checked - working perfectly',
+                    '6-month warranty provided'
+                ],
+                estimatedCompletion: 'Completed - Yesterday, 3:00 PM',
                 isDemo: true
             }
         };
@@ -957,17 +1027,17 @@ ${booking.issue}
         if (!status.exists) {
             resultDiv.innerHTML = `
                 <div class="status-card animate-shake">
-                    <div class="status-header">
+                    <div class="status-header error">
                         <div class="status-code">${code}</div>
-                        <div style="color: var(--error); margin-top: var(--space-md);">
+                        <div class="status-error">
                             <i class="fas fa-exclamation-triangle"></i>
-                            Repair code not found
+                            Repair Code Not Found
                         </div>
                     </div>
-                    <p style="color: var(--gray-400); text-align: center;">
-                        Please check your code and try again, or contact us directly.
+                    <p style="color: var(--gray-400); text-align: center; margin-bottom: var(--space-lg);">
+                        Please check your code and try again. If you just booked, allow 30 minutes for processing.
                     </p>
-                    <div style="text-align: center; margin-top: var(--space-lg);">
+                    <div style="text-align: center;">
                         <a href="https://wa.me/233246912468" class="btn btn-primary">
                             <i class="fab fa-whatsapp"></i> Contact Support
                         </a>
@@ -983,30 +1053,83 @@ ${booking.issue}
         resultDiv.innerHTML = `
             <div class="status-card animate-scaleIn">
                 <div class="status-header">
-                    <div class="status-code">${status.code}</div>
-                    <div class="status-badge ${statusClass}">${status.status}</div>
-                    ${status.isDemo ? '<div style="color: var(--accent); margin-top: var(--space-sm); font-size: 0.9rem;"><i class="fas fa-info-circle"></i> Demo Repair</div>' : ''}
-                </div>
-                
-                <div style="margin-bottom: var(--space-lg);">
-                    <strong>Device:</strong> ${status.device}
+                    <div class="status-main-info">
+                        <div class="status-code">${status.code}</div>
+                        <div class="status-badge ${statusClass}">${status.status}</div>
+                        ${status.isDemo ? '<div class="demo-badge"><i class="fas fa-info-circle"></i> Demo Repair</div>' : ''}
+                    </div>
+                    
+                    <div class="customer-info">
+                        <div class="info-item">
+                            <strong>Customer:</strong> ${status.customerName}
+                        </div>
+                        <div class="info-item">
+                            <strong>Device:</strong> ${status.device}
+                        </div>
+                        <div class="info-item">
+                            <strong>Issue:</strong> ${status.issue}
+                        </div>
+                        <div class="info-item">
+                            <strong>Urgency:</strong> ${this.getUrgencyDisplay(status.urgency)}
+                        </div>
+                    </div>
                 </div>
 
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${progressPercent};"></div>
-                </div>
-                <div style="text-align: center; color: var(--gray-400); margin-bottom: var(--space-xl);">
-                    Progress: ${progressPercent}
+                <!-- Progress Bar -->
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Overall Progress</span>
+                        <span class="progress-percent">${progressPercent}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressPercent};"></div>
+                    </div>
                 </div>
 
-                <div class="status-timeline">
-                    ${this.generateTimelineHTML(status.steps)}
+                <!-- Estimated Completion -->
+                ${status.estimatedCompletion ? `
+                    <div class="completion-estimate">
+                        <i class="fas fa-clock"></i>
+                        <strong>Estimated Completion:</strong> ${status.estimatedCompletion}
+                    </div>
+                ` : ''}
+
+                <!-- Repair Timeline -->
+                <div class="timeline-section">
+                    <h4>Repair Progress</h4>
+                    <div class="status-timeline">
+                        ${this.generateTimelineHTML(status.steps)}
+                    </div>
                 </div>
 
-                <div style="margin-top: var(--space-xl); text-align: center;">
+                <!-- Technician Notes -->
+                ${status.notes && status.notes.length > 0 ? `
+                    <div class="technician-notes">
+                        <h4>Technician Notes</h4>
+                        <div class="notes-list">
+                            ${status.notes.map(note => `
+                                <div class="note-item">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <span>${note}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Action Buttons -->
+                <div class="status-actions">
                     <a href="https://wa.me/233246912468" class="btn btn-primary hover-scale">
-                        <i class="fab fa-whatsapp"></i> Contact Technician
+                        <i class="fab fa-whatsapp"></i> Message Technician
                     </a>
+                    <button class="btn btn-outline" onclick="this.innerHTML='<i class=\\'fas fa-sync-alt fa-spin\\'></i> Refreshing...'; setTimeout(()=>window.campusFixSystems.checkRepairStatus(), 1000)">
+                        <i class="fas fa-sync-alt"></i> Refresh Status
+                    </button>
+                </div>
+
+                <!-- Help Text -->
+                <div class="status-help">
+                    <p><i class="fas fa-info-circle"></i> Status updates every 2 hours. Contact us if you need immediate assistance.</p>
                 </div>
             </div>
         `;
@@ -1014,32 +1137,137 @@ ${booking.issue}
 
     generateTimelineHTML(steps) {
         const stepConfig = [
-            { key: 'received', label: 'Received' },
-            { key: 'diagnosis', label: 'Diagnosis' },
-            { key: 'repair', label: 'Repair' },
-            { key: 'quality', label: 'Quality Check' },
-            { key: 'ready', label: 'Ready' }
+            { key: 'received', label: 'Device Received', icon: 'fa-box' },
+            { key: 'diagnosis', label: 'Diagnosis Complete', icon: 'fa-search' },
+            { key: 'parts', label: 'Parts Ready', icon: 'fa-cogs' },
+            { key: 'repair', label: 'Repair in Progress', icon: 'fa-tools' },
+            { key: 'testing', label: 'Quality Testing', icon: 'fa-check-double' },
+            { key: 'quality', label: 'Final Quality Check', icon: 'fa-award' },
+            { key: 'ready', label: 'Ready for Pickup', icon: 'fa-phone' }
         ];
 
         return stepConfig.map((step, index) => {
-            const stepTime = steps[step.key];
-            const isCompleted = stepTime !== 'Pending' && stepTime !== 'In Progress';
-            const isCurrent = stepTime === 'In Progress';
+            const stepData = steps[step.key];
+            const isCompleted = stepData?.completed;
+            const isCurrent = stepData?.time === 'In Progress' || 
+                             (stepData?.time && stepData?.time.includes('Progress'));
             
             let markerClass = '';
-            if (isCompleted) markerClass = 'completed';
-            else if (isCurrent) markerClass = 'current';
+            let statusText = '';
+            
+            if (isCompleted) {
+                markerClass = 'completed';
+                statusText = `<div class="step-status completed">Completed</div>`;
+            } else if (isCurrent) {
+                markerClass = 'current';
+                statusText = `<div class="step-status current">In Progress</div>`;
+            } else {
+                markerClass = 'pending';
+                statusText = `<div class="step-status pending">Pending</div>`;
+            }
 
             return `
-                <div class="timeline-step">
-                    <div class="step-marker ${markerClass}"></div>
+                <div class="timeline-step ${markerClass}">
+                    <div class="step-marker ${markerClass}">
+                        <i class="fas ${step.icon}"></i>
+                    </div>
                     <div class="step-content">
                         <div class="step-label">${step.label}</div>
-                        <div class="step-time">${stepTime}</div>
+                        <div class="step-time">${stepData?.time || 'Waiting...'}</div>
+                        ${statusText}
                     </div>
                 </div>
             `;
         }).join('');
+    }
+
+    // ================================
+    // ADMIN STATUS UPDATE SYSTEM
+    // ================================
+
+    updateRepairStatus(code, updates) {
+        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+        const booking = bookings[code];
+        
+        if (booking) {
+            // Update the booking with new status
+            Object.assign(booking, updates);
+            bookings[code] = booking;
+            localStorage.setItem('campusFixBookings', JSON.stringify(bookings));
+            
+            console.log('✅ Repair status updated:', code, updates);
+            this.showNotification(`Repair ${code} status updated successfully!`, 'success');
+            return true;
+        }
+        
+        this.showNotification(`Repair code ${code} not found!`, 'error');
+        return false;
+    }
+
+    // Example status update functions
+    markDiagnosisComplete(code, diagnosisNotes = []) {
+        const updates = {
+            status: 'Diagnosis Complete',
+            progress: 30,
+            steps: {
+                received: { time: 'Completed', completed: true },
+                diagnosis: { time: new Date().toLocaleString('en-GB'), completed: true },
+                parts: { time: 'Pending', completed: false },
+                repair: { time: 'Pending', completed: false },
+                testing: { time: 'Pending', completed: false },
+                quality: { time: 'Pending', completed: false },
+                ready: { time: 'Pending', completed: false }
+            },
+            notes: [
+                'Diagnosis completed',
+                ...diagnosisNotes
+            ]
+        };
+        return this.updateRepairStatus(code, updates);
+    }
+
+    markRepairInProgress(code, repairNotes = []) {
+        const updates = {
+            status: 'In Progress',
+            progress: 60,
+            steps: {
+                received: { time: 'Completed', completed: true },
+                diagnosis: { time: 'Completed', completed: true },
+                parts: { time: 'Parts available', completed: true },
+                repair: { time: 'In Progress', completed: false },
+                testing: { time: 'Pending', completed: false },
+                quality: { time: 'Pending', completed: false },
+                ready: { time: 'Pending', completed: false }
+            },
+            notes: [
+                'Repair work started',
+                ...repairNotes
+            ]
+        };
+        return this.updateRepairStatus(code, updates);
+    }
+
+    markRepairCompleted(code, completionNotes = []) {
+        const updates = {
+            status: 'Completed',
+            progress: 100,
+            steps: {
+                received: { time: 'Completed', completed: true },
+                diagnosis: { time: 'Completed', completed: true },
+                parts: { time: 'Completed', completed: true },
+                repair: { time: 'Completed', completed: true },
+                testing: { time: 'Completed', completed: true },
+                quality: { time: 'Completed', completed: true },
+                ready: { time: new Date().toLocaleString('en-GB'), completed: true }
+            },
+            notes: [
+                'Repair completed successfully',
+                'Device ready for pickup',
+                ...completionNotes
+            ],
+            estimatedCompletion: 'Completed - ' + new Date().toLocaleString('en-GB')
+        };
+        return this.updateRepairStatus(code, updates);
     }
 
     // ================================
@@ -1251,3 +1479,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 });
+
+// Admin functions for easy status updates
+window.updateRepairStatus = function(code, status, notes = []) {
+    return window.campusFixSystems.updateRepairStatus(code, { status, notes });
+};
+
+window.markDiagnosisComplete = function(code, notes = []) {
+    return window.campusFixSystems.markDiagnosisComplete(code, notes);
+};
+
+window.markRepairInProgress = function(code, notes = []) {
+    return window.campusFixSystems.markRepairInProgress(code, notes);
+};
+
+window.markRepairCompleted = function(code, notes = []) {
+    return window.campusFixSystems.markRepairCompleted(code, notes);
+};
