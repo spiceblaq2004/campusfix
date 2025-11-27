@@ -520,10 +520,28 @@ Use code *${booking.code}* on our website to check progress
     }
 
     generateBookingCode() {
-        const counter = parseInt(localStorage.getItem('bookingCounter') || '0') + 1;
+    try {
+        // Get current counter or start from a high number
+        let counter = parseInt(localStorage.getItem('bookingCounter') || '2580');
+        
+        // Increment counter
+        counter++;
+        
+        // Save back to localStorage
         localStorage.setItem('bookingCounter', counter.toString());
-        return `CF-${new Date().getFullYear()}-${counter.toString().padStart(4, '0')}`;
+        
+        // Generate code with year and padded number
+        const code = `CF-${new Date().getFullYear()}-${counter.toString().padStart(4, '0')}`;
+        
+        console.log('🎫 Generated booking code:', code);
+        return code;
+        
+    } catch (error) {
+        console.error('Error generating booking code:', error);
+        // Fallback code with timestamp
+        return `CF-${new Date().getFullYear()}-${Date.now().toString().slice(-4)}`;
     }
+}
 
     saveBooking(booking) {
         try {
