@@ -705,83 +705,116 @@ Use code *${booking.code}* on our website to check progress
         `;
     }
 
-    // ================================
-    // ADMIN FUNCTIONS - INTEGRATED
-    // ================================
+// ================================
+// ADMIN FUNCTIONS - FIXED VERSION
+// ================================
 
-    updateRepairStatus(code, updates) {
+updateRepairStatus(code, updates) {
+    try {
+        console.log('🔄 Updating repair status:', code, updates);
+        
         const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
         const booking = bookings[code];
         
-        if (booking) {
-            Object.assign(booking, updates);
-            bookings[code] = booking;
-            localStorage.setItem('campusFixBookings', JSON.stringify(bookings));
-            
-            // Trigger storage update for admin panel
-            window.dispatchEvent(new Event('storage'));
-            
-            console.log('✅ Repair status updated:', code);
-            return true;
+        if (!booking) {
+            console.error('❌ Repair not found:', code);
+            return false;
         }
         
-        console.error('❌ Repair not found:', code);
+        // Merge updates with existing booking
+        Object.assign(booking, updates);
+        bookings[code] = booking;
+        
+        // Save back to localStorage
+        localStorage.setItem('campusFixBookings', JSON.stringify(bookings));
+        
+        console.log('✅ Repair status updated successfully:', code);
+        
+        // Trigger storage event for real-time updates
+        window.dispatchEvent(new Event('storage'));
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ Error updating repair status:', error);
         return false;
     }
+}
 
-    markDiagnosisComplete(code, notes = []) {
-        const updates = {
-            status: 'Diagnosis Complete',
-            progress: 30,
-            steps: {
-                received: { time: 'Completed', completed: true },
-                diagnosis: { time: new Date().toLocaleString('en-GB'), completed: true },
-                parts: { time: 'Pending', completed: false },
-                repair: { time: 'Pending', completed: false },
-                testing: { time: 'Pending', completed: false },
-                quality: { time: 'Pending', completed: false },
-                ready: { time: 'Pending', completed: false }
-            },
-            notes: [...notes]
-        };
-        return this.updateRepairStatus(code, updates);
+markDiagnosisComplete(code, notes = []) {
+    console.log('🔧 Marking diagnosis complete for:', code);
+    
+    const updates = {
+        status: 'Diagnosis Complete',
+        progress: 30,
+        steps: {
+            received: { time: 'Completed', completed: true },
+            diagnosis: { time: new Date().toLocaleString('en-GB'), completed: true },
+            parts: { time: 'Pending', completed: false },
+            repair: { time: 'Pending', completed: false },
+            testing: { time: 'Pending', completed: false },
+            quality: { time: 'Pending', completed: false },
+            ready: { time: 'Pending', completed: false }
+        }
+    };
+    
+    // Add notes if provided
+    if (notes.length > 0) {
+        updates.notes = [...(updates.notes || []), ...notes];
     }
+    
+    return this.updateRepairStatus(code, updates);
+}
 
-    markRepairInProgress(code, notes = []) {
-        const updates = {
-            status: 'In Progress',
-            progress: 60,
-            steps: {
-                received: { time: 'Completed', completed: true },
-                diagnosis: { time: 'Completed', completed: true },
-                parts: { time: 'Parts available', completed: true },
-                repair: { time: 'In Progress', completed: false },
-                testing: { time: 'Pending', completed: false },
-                quality: { time: 'Pending', completed: false },
-                ready: { time: 'Pending', completed: false }
-            },
-            notes: [...notes]
-        };
-        return this.updateRepairStatus(code, updates);
+markRepairInProgress(code, notes = []) {
+    console.log('🔧 Marking repair in progress for:', code);
+    
+    const updates = {
+        status: 'Repair In Progress',
+        progress: 60,
+        steps: {
+            received: { time: 'Completed', completed: true },
+            diagnosis: { time: 'Completed', completed: true },
+            parts: { time: 'Parts Available', completed: true },
+            repair: { time: 'In Progress', completed: false },
+            testing: { time: 'Pending', completed: false },
+            quality: { time: 'Pending', completed: false },
+            ready: { time: 'Pending', completed: false }
+        }
+    };
+    
+    if (notes.length > 0) {
+        updates.notes = [...(updates.notes || []), ...notes];
     }
+    
+    return this.updateRepairStatus(code, updates);
+}
 
-    markRepairCompleted(code, notes = []) {
-        const updates = {
-            status: 'Completed',
-            progress: 100,
-            steps: {
-                received: { time: 'Completed', completed: true },
-                diagnosis: { time: 'Completed', completed: true },
-                parts: { time: 'Completed', completed: true },
-                repair: { time: 'Completed', completed: true },
-                testing: { time: 'Completed', completed: true },
-                quality: { time: 'Completed', completed: true },
-                ready: { time: new Date().toLocaleString('en-GB'), completed: true }
-            },
-            notes: ['Repair completed successfully', ...notes]
-        };
-        return this.updateRepairStatus(code, updates);
+markRepairCompleted(code, notes = []) {
+    console.log('🔧 Marking repair completed for:', code);
+    
+    const updates = {
+        status: 'Completed',
+        progress: 100,
+        steps: {
+            received: { time: 'Completed', completed: true },
+            diagnosis: { time: 'Completed', completed: true },
+            parts: { time: 'Completed', completed: true },
+            repair: { time: 'Completed', completed: true },
+            testing: { time: 'Completed', completed: true },
+            quality: { time: 'Completed', completed: true },
+            ready: { time: new Date().toLocaleString('en-GB'), completed: true }
+        }
+    };
+    
+    if (notes.length > 0) {
+        updates.notes = [...(updates.notes || []), 'Repair completed successfully', ...notes];
+    } else {
+        updates.notes = [...(updates.notes || []), 'Repair completed successfully'];
     }
+    
+    return this.updateRepairStatus(code, updates);
+}
 
     // ================================
     // NOTIFICATION SYSTEM
