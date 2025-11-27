@@ -233,7 +233,7 @@
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
 }
@@ -298,6 +298,11 @@
 
 /* Fix for mobile dropdowns */
 @media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-md) !important;
+  }
+  
   .form-group select {
     font-size: 16px !important;
     height: 50px !important;
@@ -308,7 +313,7 @@
   display: block !important;
 }
 
-/* Quote Result Styles */
+/* Enhanced Quote Result Styles */
 .quote-result.hidden {
   display: none;
 }
@@ -367,6 +372,26 @@
   font-weight: 600;
 }
 
+/* Device Info Styles */
+.device-info {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary);
+}
+
+.device-spec {
+  color: var(--gray-300);
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+.device-spec strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
 .price-display {
   margin-bottom: var(--space-xl);
 }
@@ -388,6 +413,7 @@
   color: var(--primary);
   margin: var(--space-sm) 0;
   line-height: 1;
+  text-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
 }
 
 .price-note {
@@ -400,11 +426,12 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
   color: var(--gray-300);
-  font-weight: 500;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .time-estimate i {
@@ -502,6 +529,7 @@
   opacity: 0.6;
   cursor: not-allowed !important;
   transform: none !important;
+  background: var(--gray-600) !important;
 }
 
 .btn-disabled:hover {
@@ -528,6 +556,17 @@
   animation: spin 1s linear infinite;
 }
 
+/* Form group enhancements */
+.form-group select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.form-group select:disabled option {
+  color: var(--gray-600);
+}
+
 /* ================================
    BOOKING FORM STYLES
    ================================ */
@@ -549,28 +588,28 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.form-grid {
+.booking-form .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
 }
 
-.form-group {
+.booking-form .form-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
-.form-group label {
+.booking-form .form-group label {
   font-weight: 600;
   color: var(--gray-300);
   margin-bottom: 8px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.booking-form .form-group input,
+.booking-form .form-group select,
+.booking-form .form-group textarea {
   padding: 16px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -582,15 +621,15 @@
   min-height: 50px;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.booking-form .form-group input:focus,
+.booking-form .form-group select:focus,
+.booking-form .form-group textarea:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.form-group textarea {
+.booking-form .form-group textarea {
   resize: vertical;
   min-height: 120px;
 }
@@ -818,7 +857,7 @@
 }
 
 /* ================================
-   MOBILE RESPONSIVE FIXES - COMPLETE OVERHAUL
+   MOBILE RESPONSIVE FIXES
    ================================ */
 
 @media (max-width: 768px) {
@@ -846,12 +885,6 @@
     padding: var(--space-lg) !important;
     margin: 0 var(--space-sm) !important;
     border-radius: var(--radius-lg) !important;
-  }
-  
-  .form-grid {
-    grid-template-columns: 1fr !important;
-    gap: var(--space-md) !important;
-    margin-bottom: var(--space-lg) !important;
   }
   
   .calculator-form {
@@ -1277,215 +1310,4 @@
     height: 16px !important;
     margin: -8px 0 0 -8px !important;
   }
-}
-
-/* ================================
-   ENHANCED QUOTE CALCULATOR STYLES
-   ================================ */
-
-.device-info {
-    margin-bottom: var(--space-lg);
-    padding: var(--space-md);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    border-left: 4px solid var(--primary);
-}
-
-.device-spec {
-    color: var(--gray-300);
-    font-size: var(--text-base);
-    line-height: 1.5;
-}
-
-.device-spec strong {
-    color: var(--primary);
-    font-weight: 700;
-}
-
-/* Form group enhancements */
-.form-group select:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.form-group select:disabled option {
-    color: var(--gray-600);
-}
-
-/* Enhanced button states */
-.btn-disabled {
-    opacity: 0.6;
-    cursor: not-allowed !important;
-    transform: none !important;
-    background: var(--gray-600) !important;
-}
-
-.btn-disabled:hover {
-    transform: none !important;
-    box-shadow: var(--shadow-lg) !important;
-}
-
-/* Loading state improvements */
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid transparent;
-    border-top: 2px solid currentColor;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-/* Enhanced form grid for three columns */
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: var(--space-lg);
-    margin-bottom: var(--space-xl);
-}
-
-@media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-md);
-    }
-}
-
-/* Enhanced result card */
-.result-card {
-    text-align: center;
-    padding: var(--space-xl);
-    background: rgba(99, 102, 241, 0.1);
-    border-radius: var(--radius-lg);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    position: relative;
-    overflow: hidden;
-}
-
-.result-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.6s ease;
-}
-
-.result-card:hover::before {
-    left: 100%;
-}
-
-/* Price display enhancements */
-.price-display {
-    margin-bottom: var(--space-xl);
-}
-
-.price-range {
-    margin-bottom: var(--space-lg);
-}
-
-.price-from {
-    display: block;
-    color: var(--gray-400);
-    font-size: var(--text-sm);
-    margin-bottom: var(--space-xs);
-    font-weight: 600;
-}
-
-.price {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--primary);
-    margin: var(--space-sm) 0;
-    line-height: 1;
-    text-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
-}
-
-.price-note {
-    display: block;
-    color: var(--gray-400);
-    font-size: var(--text-sm);
-    font-weight: 500;
-}
-
-.time-estimate {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    background: rgba(255, 255, 255, 0.08);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-md);
-    color: var(--gray-300);
-    font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.time-estimate i {
-    color: var(--accent);
-}
-
-/* Enhanced dropdown styling */
-.form-group select {
-    width: 100%;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
-    color: var(--light);
-    font-size: 16px;
-    transition: var(--transition);
-    font-family: var(--font-family);
-    cursor: pointer;
-    position: relative;
-    z-index: 11;
-    appearance: menulist;
-    -webkit-appearance: menulist;
-    -moz-appearance: menulist;
-    min-height: 50px;
-}
-
-.form-group select:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    z-index: 100;
-}
-
-.form-group select:hover:not(:disabled) {
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.form-group select option {
-    background: var(--gray-800);
-    color: var(--light);
-    padding: var(--space-md);
-    font-size: var(--text-base);
-}
-
-/* Mobile dropdown fixes */
-@media (max-width: 768px) {
-    .form-group select {
-        font-size: 16px !important;
-        height: 50px !important;
-    }
-    
-    .price {
-        font-size: 2rem !important;
-    }
-    
-    .device-spec {
-        font-size: var(--text-sm) !important;
-    }
 }
