@@ -323,240 +323,103 @@ class CampusFixSystems {
     }
 
     // ================================
-    // BOOKING SYSTEM - INTEGRATED WITH ADMIN
-    // ================================
+// IMPROVED BOOKING SYSTEM WITH UNIFIED COUNTER
+// ================================
 
-    setupBookingSystem() {
-        const bookingForm = document.getElementById('bookingForm');
-        console.log('🔧 Setting up booking system...', bookingForm);
-        
-        if (bookingForm) {
-            bookingForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.handleBookingSubmission();
-            });
-        }
-    }
-
-    handleBookingSubmission() {
-        console.log('📦 Handling booking submission...');
-        
-        const formData = this.getBookingFormData();
-        
-        if (!this.validateBookingForm(formData)) {
-            return;
-        }
-
-        const submitBtn = document.querySelector('#bookingForm button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing WhatsApp...';
-        submitBtn.disabled = true;
-
-        try {
-            const bookingCode = this.generateBookingCode();
-            const booking = this.createBooking(bookingCode, formData);
-            
-            this.saveBooking(booking);
-            this.sendBookingToWhatsApp(booking);
-            this.trackEvent('booking_created', formData.device);
-            
-        } catch (error) {
-            console.error('Booking error:', error);
-            this.showNotification('Error creating booking. Please try again.', 'error');
-        } finally {
-            setTimeout(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }, 3000);
-        }
-    }
-
-    getBookingFormData() {
-        return {
-            name: document.getElementById('bookingName')?.value.trim() || '',
-            phone: document.getElementById('bookingPhone')?.value.trim() || '',
-            hostel: document.getElementById('bookingHostel')?.value.trim() || '',
-            device: document.getElementById('bookingDevice')?.value.trim() || '',
-            issue: document.getElementById('bookingIssue')?.value.trim() || '',
-            urgency: document.getElementById('bookingUrgency')?.value || 'standard',
-            timestamp: new Date().toLocaleString('en-GB')
-        };
-    }
-
-    validateBookingForm(data) {
-        const errors = [];
-        
-        if (!data.name) errors.push('Name is required');
-        if (!data.phone) errors.push('Phone number is required');
-        if (!data.hostel) errors.push('Hostel information is required');
-        if (!data.device) errors.push('Device model is required');
-        if (!data.issue) errors.push('Issue description is required');
-        
-        if (data.phone && !/^(0|\+233)[0-9]{9,}$/.test(data.phone.replace(/\s/g, ''))) {
-            errors.push('Please enter a valid Ghana phone number');
-        }
-        
-        if (errors.length > 0) {
-            this.showNotification(errors.join(', '), 'error');
-            return false;
-        }
-        
-        return true;
-    }
-
-    createBooking(code, data) {
-        const now = new Date();
-        const completionTimes = { 'emergency': 6, 'express': 24, 'standard': 72 };
-        const hours = completionTimes[data.urgency] || 72;
-        const completionDate = new Date(now.getTime() + hours * 60 * 60 * 1000);
-        
-        return {
-            code: code,
-            ...data,
-            status: 'Received',
-            progress: 10,
-            createdAt: now.toISOString(),
-            steps: {
-                received: { time: now.toLocaleString('en-GB'), completed: true },
-                diagnosis: { time: 'Pending', completed: false },
-                parts: { time: 'Pending', completed: false },
-                repair: { time: 'Pending', completed: false },
-                testing: { time: 'Pending', completed: false },
-                quality: { time: 'Pending', completed: false },
-                ready: { time: 'Pending', completed: false }
-            },
-            notes: [
-                `Device: ${data.device}`,
-                `Issue: ${data.issue}`
-            ],
-            estimatedCompletion: completionDate.toLocaleString('en-GB', {
-                weekday: 'long',
-                hour: '2-digit',
-                minute: '2-digit'
-            })
-        };
-    }
-
-    sendBookingToWhatsApp(booking) {
-        const message = `📱 *NEW PHONE REPAIR BOOKING - CampusFix UENR* 📱
-
-👤 *CUSTOMER INFORMATION*
-• 🔢 *Booking Code:* ${booking.code}
-• 📛 *Full Name:* ${booking.name}
-• 📞 *Phone:* ${booking.phone}
-• 🏠 *Hostel:* ${booking.hostel}
-
-📋 *REPAIR DETAILS* 
-• 📱 *Device:* ${booking.device}
-• ⚡ *Urgency:* ${this.getUrgencyDisplay(booking.urgency)}
-• 🕒 *Booked:* ${booking.timestamp}
-
-🔧 *ISSUE DESCRIPTION:*
-${booking.issue}
-
-📍 *Track Repair Status:*
-Use code *${booking.code}* on our website to check progress
-
-💬 *I'm ready for pickup!*`;
-
-        const whatsappUrl = `https://wa.me/233246912468?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
-        
-        this.showNotification(`✅ Booking ${booking.code} sent to WhatsApp!`, 'success');
-        this.showCustomerConfirmation(booking);
-    }
-
-    getUrgencyDisplay(urgency) {
-        const urgencyMap = {
-            'standard': 'Standard (2-3 days)',
-            'express': 'Express (Same day) +GH₵20',
-            'emergency': 'Emergency (4-6 hours) +GH₵50'
-        };
-        return urgencyMap[urgency] || urgency;
-    }
-
-    showCustomerConfirmation(booking) {
-        const confirmationHTML = `
-            <div class="booking-confirmation-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px;">
-                <div style="background: #1e293b; padding: 30px; border-radius: 20px; max-width: 500px; width: 100%; border: 2px solid #6366f1; text-align: center; position: relative;">
-                    <button class="close-confirmation" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer;">×</button>
-                    
-                    <div style="font-size: 60px; color: #10b981; margin-bottom: 20px;">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    
-                    <h2 style="margin-bottom: 15px; color: #10b981; font-size: 28px;">Booking Confirmed! 🎉</h2>
-                    
-                    <div style="background: rgba(99, 102, 241, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
-                        <div style="font-size: 32px; font-weight: 800; color: #6366f1; margin-bottom: 10px;">
-                            ${booking.code}
-                        </div>
-                        <p style="color: #cbd5e1; margin-bottom: 15px;">
-                            Use this code to track your repair status
-                        </p>
-                    </div>
-                    
-                    <div style="margin-bottom: 25px;">
-                        <a href="https://wa.me/233246912468" class="btn btn-primary" style="padding: 15px; border: none; border-radius: 12px; background: #6366f1; color: white; text-decoration: none; font-weight: 600; display: block; margin-bottom: 10px;">
-                            <i class="fab fa-whatsapp"></i> Message Now
-                        </a>
-                        <button class="btn btn-secondary" onclick="this.closest('.booking-confirmation-overlay').remove(); document.getElementById('bookingForm').reset();" style="padding: 15px; border: none; border-radius: 12px; background: #475569; color: white; font-weight: 600; width: 100%;">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        const confirmationElement = document.createElement('div');
-        confirmationElement.innerHTML = confirmationHTML;
-        document.body.appendChild(confirmationElement);
-
-        const closeBtn = confirmationElement.querySelector('.close-confirmation');
-        closeBtn.onclick = () => {
-            confirmationElement.remove();
-            document.getElementById('bookingForm').reset();
-        };
-    }
-
-    generateBookingCode() {
+generateBookingCode() {
     try {
-        // Get current counter or start from a high number
-        let counter = parseInt(localStorage.getItem('bookingCounter') || '2580');
+        console.log('🔄 Generating booking code...');
         
-        // Increment counter
-        counter++;
+        // Get all existing bookings to find the highest code
+        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+        const bookingCodes = Object.keys(bookings);
         
-        // Save back to localStorage
-        localStorage.setItem('bookingCounter', counter.toString());
+        let highestNumber = 2580; // Start from this number
         
-        // Generate code with year and padded number
-        const code = `CF-${new Date().getFullYear()}-${counter.toString().padStart(4, '0')}`;
+        if (bookingCodes.length > 0) {
+            // Extract numbers from existing codes like "CF-2024-0001"
+            const numbers = bookingCodes.map(code => {
+                const match = code.match(/CF-\d+-(\d+)/);
+                return match ? parseInt(match[1]) : 0;
+            }).filter(num => !isNaN(num));
+            
+            // Find the highest number
+            highestNumber = Math.max(...numbers, highestNumber);
+        }
         
-        console.log('🎫 Generated booking code:', code);
+        // Use the counter from localStorage as primary, but fallback to highest code + 1
+        const storedCounter = parseInt(localStorage.getItem('bookingCounter') || '0');
+        let nextNumber = Math.max(storedCounter + 1, highestNumber + 1);
+        
+        // Ensure we don't go backwards
+        if (storedCounter > highestNumber) {
+            nextNumber = storedCounter + 1;
+        }
+        
+        // Save the new counter
+        localStorage.setItem('bookingCounter', nextNumber.toString());
+        
+        const code = `CF-${new Date().getFullYear()}-${nextNumber.toString().padStart(4, '0')}`;
+        console.log('🎫 Generated booking code:', code, '(Next:', nextNumber + 1, ')');
+        
         return code;
         
     } catch (error) {
         console.error('Error generating booking code:', error);
-        // Fallback code with timestamp
-        return `CF-${new Date().getFullYear()}-${Date.now().toString().slice(-4)}`;
+        // Emergency fallback with timestamp
+        const fallbackCode = `CF-${new Date().getFullYear()}-${Date.now().toString().slice(-4)}`;
+        console.log('🆘 Using fallback code:', fallbackCode);
+        return fallbackCode;
     }
 }
 
-    saveBooking(booking) {
-        try {
-            const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
-            bookings[booking.code] = booking;
-            localStorage.setItem('campusFixBookings', JSON.stringify(bookings));
-            console.log('💾 Booking saved:', booking.code);
-            
-            // Trigger storage event for admin panel
-            window.dispatchEvent(new Event('storage'));
-        } catch (error) {
-            console.error('Error saving booking:', error);
+saveBooking(booking) {
+    try {
+        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+        
+        // Double-check if code already exists (shouldn't happen with improved generator)
+        if (bookings[booking.code]) {
+            console.warn('⚠️ Booking code already exists! Generating new code...');
+            // Generate a new code with emergency timestamp
+            booking.code = `CF-${new Date().getFullYear()}-EMG-${Date.now().toString().slice(-4)}`;
         }
+        
+        bookings[booking.code] = booking;
+        localStorage.setItem('campusFixBookings', JSON.stringify(bookings));
+        
+        console.log('💾 Booking saved:', booking.code);
+        
+        // Update counter based on the saved code
+        this.updateCounterFromCode(booking.code);
+        
+        // Trigger storage event for admin panel
+        window.dispatchEvent(new Event('storage'));
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ Error saving booking:', error);
+        return false;
     }
+}
 
+updateCounterFromCode(code) {
+    try {
+        const match = code.match(/CF-\d+-(\d+)/);
+        if (match) {
+            const codeNumber = parseInt(match[1]);
+            const currentCounter = parseInt(localStorage.getItem('bookingCounter') || '0');
+            
+            // Update counter if this code has a higher number
+            if (codeNumber > currentCounter) {
+                localStorage.setItem('bookingCounter', codeNumber.toString());
+                console.log('🔢 Updated counter to:', codeNumber);
+            }
+        }
+    } catch (error) {
+        console.error('Error updating counter from code:', error);
+    }
+}
     // ================================
     // STATUS CHECKER SYSTEM
     // ================================
