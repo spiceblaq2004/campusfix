@@ -1329,3 +1329,315 @@
   background: var(--gray-800) !important;
   color: var(--light) !important;
 }
+
+/* ================================
+   ENHANCED STATUS CHECKER STYLES
+   ================================ */
+
+.status-header {
+    margin-bottom: var(--space-xl);
+}
+
+.status-main-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.customer-info {
+    background: rgba(255, 255, 255, 0.05);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--primary);
+}
+
+.info-item {
+    margin-bottom: var(--space-sm);
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.info-item strong {
+    color: var(--primary);
+    min-width: 80px;
+}
+
+.progress-section {
+    margin-bottom: var(--space-xl);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+    font-weight: 600;
+}
+
+.progress-percent {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.completion-estimate {
+    background: rgba(99, 102, 241, 0.1);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-xl);
+    text-align: center;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.completion-estimate i {
+    color: var(--accent);
+    margin-right: var(--space-sm);
+}
+
+.timeline-section {
+    margin-bottom: var(--space-xl);
+}
+
+.timeline-section h4 {
+    margin-bottom: var(--space-lg);
+    color: var(--light);
+    text-align: center;
+}
+
+.status-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    position: relative;
+}
+
+.status-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 25px;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+}
+
+.timeline-step {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: flex-start;
+    position: relative;
+    z-index: 2;
+}
+
+.step-marker {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.step-marker.pending {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--gray-500);
+    color: var(--gray-500);
+}
+
+.step-marker.current {
+    background: var(--primary);
+    border: 2px solid var(--primary);
+    color: white;
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+.step-marker.completed {
+    background: var(--success);
+    border: 2px solid var(--success);
+    color: white;
+}
+
+.step-content {
+    flex: 1;
+    padding-bottom: var(--space-lg);
+}
+
+.step-label {
+    font-weight: 700;
+    color: var(--light);
+    margin-bottom: var(--space-xs);
+}
+
+.step-time {
+    color: var(--gray-400);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-xs);
+}
+
+.step-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.step-status.completed {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.step-status.current {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.step-status.pending {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--gray-400);
+    border: 1px solid var(--gray-500);
+}
+
+.technician-notes {
+    background: rgba(255, 255, 255, 0.05);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-xl);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.technician-notes h4 {
+    margin-bottom: var(--space-md);
+    color: var(--light);
+}
+
+.notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.note-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+}
+
+.note-item i {
+    color: var(--accent);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.status-actions {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.status-actions .btn {
+    flex: 1;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.status-help {
+    text-align: center;
+    color: var(--gray-400);
+    font-size: var(--text-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-md);
+}
+
+.status-help i {
+    color: var(--primary);
+    margin-right: var(--space-xs);
+}
+
+.demo-badge {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--accent);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: 20px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border: 1px solid var(--accent);
+}
+
+.status-header.error {
+    text-align: center;
+}
+
+.status-error {
+    color: var(--error);
+    font-weight: 600;
+    margin-top: var(--space-md);
+}
+
+.status-error i {
+    margin-right: var(--space-sm);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .status-timeline::before {
+        left: 20px;
+    }
+    
+    .step-marker {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    
+    .status-actions {
+        flex-direction: column;
+    }
+    
+    .status-actions .btn {
+        min-width: auto;
+    }
+    
+    .customer-info {
+        padding: var(--space-md);
+    }
+    
+    .info-item {
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+    
+    .info-item strong {
+        min-width: auto;
+    }
+    
+    .status-main-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+    
+    .technician-notes {
+        padding: var(--space-md);
+    }
+    
+    .notes-list {
+        gap: var(--space-xs);
+    }
+    
+    .note-item {
+        padding: var(--space-xs) var(--space-sm);
+    }
+}
