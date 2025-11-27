@@ -851,3 +851,51 @@ window.addEventListener('repairUpdated', function() {
         window.admin.loadRepairs();
     }
 });
+
+// ================================
+// EMERGENCY COUNTER RESET FUNCTION
+// ================================
+
+fixBookingCounter() {
+    try {
+        console.log('🛠️ Fixing booking counter...');
+        
+        const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+        const bookingCodes = Object.keys(bookings);
+        
+        if (bookingCodes.length === 0) {
+            console.log('No bookings found. Setting counter to 2580.');
+            localStorage.setItem('bookingCounter', '2580');
+            return 2580;
+        }
+        
+        // Extract numbers from all booking codes
+        const numbers = bookingCodes.map(code => {
+            const match = code.match(/CF-\d+-(\d+)/);
+            return match ? parseInt(match[1]) : 0;
+        }).filter(num => !isNaN(num));
+        
+        // Find the highest number
+        const highestNumber = Math.max(...numbers);
+        
+        // Set counter to highest number + 1
+        const newCounter = highestNumber + 1;
+        localStorage.setItem('bookingCounter', newCounter.toString());
+        
+        console.log('✅ Counter fixed. Next booking will be:', `CF-${new Date().getFullYear()}-${newCounter.toString().padStart(4, '0')}`);
+        
+        return newCounter;
+        
+    } catch (error) {
+        console.error('Error fixing booking counter:', error);
+        return 2580;
+    }
+}
+
+// Add this to make it accessible from browser console
+window.fixBookingCounter = function() {
+    if (window.campusFixSystems) {
+        return window.campusFixSystems.fixBookingCounter();
+    }
+    return null;
+};
