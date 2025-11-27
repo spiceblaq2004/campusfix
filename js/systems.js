@@ -904,40 +904,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ================================
-// GLOBAL ADMIN FUNCTIONS
+// GLOBAL ADMIN FUNCTIONS - FIXED
 // ================================
 
 window.updateRepairStatus = function(code, status, notes = []) {
+    console.log('🌐 Global updateRepairStatus called:', code, status);
+    
     if (window.campusFixSystems) {
-        return window.campusFixSystems.updateRepairStatus(code, { status, notes });
+        const updates = typeof status === 'object' ? status : { status };
+        if (notes.length > 0) {
+            updates.notes = notes;
+        }
+        return window.campusFixSystems.updateRepairStatus(code, updates);
+    } else {
+        console.error('❌ CampusFix systems not loaded');
+        return false;
     }
-    return false;
 };
 
 window.markDiagnosisComplete = function(code, notes = []) {
+    console.log('🌐 Global markDiagnosisComplete called:', code);
+    
     if (window.campusFixSystems) {
         return window.campusFixSystems.markDiagnosisComplete(code, notes);
+    } else {
+        console.error('❌ CampusFix systems not loaded');
+        return false;
     }
-    return false;
 };
 
 window.markRepairInProgress = function(code, notes = []) {
+    console.log('🌐 Global markRepairInProgress called:', code);
+    
     if (window.campusFixSystems) {
         return window.campusFixSystems.markRepairInProgress(code, notes);
+    } else {
+        console.error('❌ CampusFix systems not loaded');
+        return false;
     }
-    return false;
 };
 
 window.markRepairCompleted = function(code, notes = []) {
+    console.log('🌐 Global markRepairCompleted called:', code);
+    
     if (window.campusFixSystems) {
         return window.campusFixSystems.markRepairCompleted(code, notes);
+    } else {
+        console.error('❌ CampusFix systems not loaded');
+        return false;
     }
-    return false;
 };
 
-// Storage event listener for real-time updates
+// Enhanced storage event listener
 window.addEventListener('storage', function() {
-    if (window.adminPanel && typeof window.adminPanel.loadRepairs === 'function') {
-        window.adminPanel.loadRepairs();
+    console.log('📦 Storage updated - refreshing repairs list');
+    if (window.admin && typeof window.admin.loadRepairs === 'function') {
+        window.admin.loadRepairs();
+    }
+});
+
+// Also listen for custom events for same-tab updates
+window.addEventListener('repairUpdated', function() {
+    console.log('🔧 Repair updated via custom event');
+    if (window.admin && typeof window.admin.loadRepairs === 'function') {
+        window.admin.loadRepairs();
     }
 });
