@@ -116,11 +116,13 @@
         input:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         textarea {
             height: 120px;
             resize: vertical;
+            line-height: 1.5;
         }
 
         .btn {
@@ -154,6 +156,7 @@
 
         .btn-success:hover {
             background: #059669;
+            transform: translateY(-2px);
         }
 
         .btn-warning {
@@ -163,11 +166,18 @@
 
         .btn-warning:hover {
             background: #d97706;
+            transform: translateY(-2px);
         }
 
         .btn-full {
             width: 100%;
             justify-content: center;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         .quick-actions {
@@ -253,6 +263,11 @@
             border-left-color: var(--error);
         }
 
+        .status-update.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left-color: var(--warning);
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -265,9 +280,26 @@
             color: var(--gray-400);
         }
 
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .system-status.connected {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .system-status.disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
         }
 
         /* Scrollbar */
@@ -282,6 +314,15 @@
         ::-webkit-scrollbar-thumb {
             background: var(--primary);
             border-radius: 4px;
+        }
+
+        .debug-info {
+            background: rgba(255,255,255,0.02);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: var(--gray-400);
         }
     </style>
 </head>
@@ -298,6 +339,11 @@
                 <div class="card">
                     <h2><i class="fas fa-edit"></i> Update Repair Status</h2>
                     
+                    <div id="systemStatus" class="system-status disconnected">
+                        <i class="fas fa-plug"></i>
+                        <span>Connecting to systems...</span>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="repairCode"><i class="fas fa-barcode"></i> Repair Code</label>
                         <input type="text" id="repairCode" placeholder="Enter repair code (e.g., CF-2024-0001)">
@@ -309,20 +355,25 @@
                     </div>
 
                     <div class="quick-actions">
-                        <button onclick="markDiagnosis()" class="btn btn-success btn-full">
+                        <button onclick="markDiagnosis()" class="btn btn-success btn-full" id="btnDiagnosis">
                             <i class="fas fa-search"></i> Mark Diagnosis Complete
                         </button>
-                        <button onclick="markRepairStart()" class="btn btn-warning btn-full">
+                        <button onclick="markRepairStart()" class="btn btn-warning btn-full" id="btnRepairStart">
                             <i class="fas fa-tools"></i> Mark Repair Started
                         </button>
-                        <button onclick="markRepairComplete()" class="btn btn-success btn-full">
+                        <button onclick="markRepairComplete()" class="btn btn-success btn-full" id="btnRepairComplete">
                             <i class="fas fa-check-circle"></i> Mark Repair Completed
                         </button>
                     </div>
 
-                    <button onclick="updateStatus()" class="btn btn-primary btn-full">
+                    <button onclick="updateStatus()" class="btn btn-primary btn-full" id="btnUpdate">
                         <i class="fas fa-sync-alt"></i> Update Status
                     </button>
+
+                    <div class="debug-info">
+                        <strong>Debug Info:</strong>
+                        <div id="debugInfo">Loading...</div>
+                    </div>
                 </div>
 
                 <div class="card" style="margin-top: 30px;">
@@ -355,19 +406,112 @@
     </div>
 
     <script>
-        // Simple Admin Panel
+        // Simple Admin Panel - FIXED VERSION
         class SimpleAdmin {
             constructor() {
+                this.isConnected = false;
                 this.init();
             }
 
             init() {
-                console.log('🔧 Admin panel initialized');
-                this.loadRepairs();
+                console.log('🔧 Admin panel initializing...');
                 this.setupEventListeners();
+                this.loadSystems();
                 
-                // Auto-refresh every 5 seconds
-                setInterval(() => this.loadRepairs(), 5000);
+                // Auto-refresh every 3 seconds
+                setInterval(() => this.loadRepairs(), 3000);
+            }
+
+            setupEventListeners() {
+                // Enter key support
+                document.getElementById('repairCode').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.findRepair();
+                    }
+                });
+
+                // Click repair items
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.repair-item')) {
+                        const repairItem = e.target.closest('.repair-item');
+                        const code = repairItem.querySelector('.repair-code').textContent;
+                        document.getElementById('repairCode').value = code;
+                        
+                        // Update active state
+                        document.querySelectorAll('.repair-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        repairItem.classList.add('active');
+                        
+                        this.logStatus(`Selected repair: ${code}`, false);
+                    }
+                });
+            }
+
+            loadSystems() {
+                console.log('🔌 Loading systems...');
+                
+                // Check if systems.js is already loaded
+                if (window.campusFixSystems) {
+                    this.handleSystemsLoaded();
+                    return;
+                }
+
+                // Load systems.js
+                const script = document.createElement('script');
+                script.src = 'js/systems.js';
+                script.onload = () => {
+                    console.log('✅ systems.js loaded successfully');
+                    setTimeout(() => this.handleSystemsLoaded(), 100);
+                };
+                script.onerror = () => {
+                    console.error('❌ Failed to load systems.js');
+                    this.handleSystemsError();
+                };
+                document.head.appendChild(script);
+            }
+
+            handleSystemsLoaded() {
+                if (window.campusFixSystems && window.markDiagnosisComplete) {
+                    this.isConnected = true;
+                    this.updateSystemStatus(true);
+                    this.loadRepairs();
+                    this.logStatus('✅ Systems connected successfully', false);
+                    console.log('🚀 Admin panel ready and connected');
+                } else {
+                    this.handleSystemsError();
+                }
+            }
+
+            handleSystemsError() {
+                this.isConnected = false;
+                this.updateSystemStatus(false);
+                this.logStatus('❌ Systems not loaded properly. Please refresh the page.', true);
+                console.error('Systems connection failed');
+            }
+
+            updateSystemStatus(connected) {
+                const statusElement = document.getElementById('systemStatus');
+                if (connected) {
+                    statusElement.className = 'system-status connected';
+                    statusElement.innerHTML = '<i class="fas fa-check-circle"></i><span>Systems Connected</span>';
+                } else {
+                    statusElement.className = 'system-status disconnected';
+                    statusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Systems Disconnected</span>';
+                }
+            }
+
+            updateDebugInfo() {
+                const code = document.getElementById('repairCode').value;
+                const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                const repairExists = code ? !!bookings[code] : false;
+                
+                document.getElementById('debugInfo').innerHTML = `
+                    Systems: ${this.isConnected ? 'Connected' : 'Disconnected'}<br>
+                    Repair Code: ${code || 'None'}<br>
+                    Repair Exists: ${repairExists ? 'Yes' : 'No'}<br>
+                    Total Repairs: ${Object.keys(bookings).length}
+                `;
             }
 
             loadRepairs() {
@@ -375,7 +519,7 @@
                     const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
                     const repairList = document.getElementById('repairList');
                     
-                    repairList.innerHTML = '';
+                    this.updateDebugInfo();
                     
                     if (Object.keys(bookings).length === 0) {
                         repairList.innerHTML = `
@@ -395,51 +539,40 @@
                         new Date(b.createdAt) - new Date(a.createdAt)
                     );
                     
+                    let html = '';
                     sortedBookings.forEach(booking => {
                         const progressClass = booking.progress === 100 ? 'completed' : 'progress';
-                        const repairItem = document.createElement('div');
-                        repairItem.className = 'repair-item';
-                        repairItem.innerHTML = `
-                            <div class="repair-code">${booking.code}</div>
-                            <div class="repair-details">
-                                <strong>${booking.device}</strong><br>
-                                Customer: ${booking.name}<br>
-                                Status: ${booking.status} 
-                                <span class="progress-badge ${progressClass}">${booking.progress}%</span>
-                                <br>
-                                <small>Created: ${new Date(booking.createdAt).toLocaleDateString()}</small>
+                        const isActive = document.getElementById('repairCode').value === booking.code;
+                        
+                        html += `
+                            <div class="repair-item ${isActive ? 'active' : ''}">
+                                <div class="repair-code">${booking.code}</div>
+                                <div class="repair-details">
+                                    <strong>${booking.device}</strong><br>
+                                    Customer: ${booking.name}<br>
+                                    Status: ${booking.status} 
+                                    <span class="progress-badge ${progressClass}">${booking.progress}%</span>
+                                    <br>
+                                    <small>Created: ${new Date(booking.createdAt).toLocaleDateString()}</small>
+                                </div>
                             </div>
                         `;
-                        repairItem.onclick = () => {
-                            // Remove active class from all items
-                            document.querySelectorAll('.repair-item').forEach(item => {
-                                item.classList.remove('active');
-                            });
-                            // Add active class to clicked item
-                            repairItem.classList.add('active');
-                            // Fill the repair code
-                            document.getElementById('repairCode').value = booking.code;
-                        };
-                        repairList.appendChild(repairItem);
                     });
+                    
+                    repairList.innerHTML = html;
+                    
                 } catch (error) {
                     console.error('Error loading repairs:', error);
-                    this.logStatus('Error loading repairs', true);
+                    this.logStatus('Error loading repairs: ' + error.message, true);
                 }
-            }
-
-            setupEventListeners() {
-                // Enter key support
-                document.getElementById('repairCode').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.findRepair();
-                    }
-                });
             }
 
             findRepair() {
                 const code = document.getElementById('repairCode').value.trim().toUpperCase();
-                if (!code) return;
+                if (!code) {
+                    this.logStatus('❌ Please enter a repair code', true);
+                    return;
+                }
 
                 const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
                 const booking = bookings[code];
@@ -453,10 +586,12 @@
                             item.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     });
-                    this.logStatus(`Found repair: ${code} - ${booking.device}`);
+                    this.logStatus(`🔍 Found repair: ${code} - ${booking.device}`);
                 } else {
-                    this.logStatus(`Repair not found: ${code}`, true);
+                    this.logStatus(`❌ Repair not found: ${code}`, true);
                 }
+                
+                this.updateDebugInfo();
             }
 
             markDiagnosis() {
@@ -464,23 +599,39 @@
                 const notes = this.getNotesArray();
                 
                 if (!code) {
-                    this.logStatus('Please enter a repair code', true);
+                    this.logStatus('❌ Please enter a repair code', true);
                     return false;
                 }
                 
+                if (!this.isConnected) {
+                    this.logStatus('❌ Systems not connected. Please refresh the page.', true);
+                    return false;
+                }
+                
+                console.log('🔄 Marking diagnosis complete for:', code);
                 this.setLoadingState(true);
                 
                 try {
-                    if (window.markDiagnosisComplete && window.markDiagnosisComplete(code, notes)) {
-                        this.logStatus(`✅ Diagnosis complete: ${code}`);
+                    const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                    if (!bookings[code]) {
+                        this.logStatus(`❌ Repair ${code} not found in storage`, true);
+                        this.setLoadingState(false);
+                        return false;
+                    }
+                    
+                    const success = window.markDiagnosisComplete(code, notes);
+                    
+                    if (success) {
+                        this.logStatus(`✅ Diagnosis marked complete for ${code}`);
                         this.loadRepairs();
                         this.clearForm();
                         return true;
                     } else {
-                        this.logStatus(`❌ Failed to update: ${code}`, true);
+                        this.logStatus(`❌ Function returned false for ${code}`, true);
                         return false;
                     }
                 } catch (error) {
+                    console.error('Error in markDiagnosis:', error);
                     this.logStatus(`❌ Error: ${error.message}`, true);
                     return false;
                 } finally {
@@ -493,23 +644,39 @@
                 const notes = this.getNotesArray();
                 
                 if (!code) {
-                    this.logStatus('Please enter a repair code', true);
+                    this.logStatus('❌ Please enter a repair code', true);
                     return false;
                 }
                 
+                if (!this.isConnected) {
+                    this.logStatus('❌ Systems not connected. Please refresh the page.', true);
+                    return false;
+                }
+                
+                console.log('🔄 Marking repair started for:', code);
                 this.setLoadingState(true);
                 
                 try {
-                    if (window.markRepairInProgress && window.markRepairInProgress(code, notes)) {
-                        this.logStatus(`🔧 Repair started: ${code}`);
+                    const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                    if (!bookings[code]) {
+                        this.logStatus(`❌ Repair ${code} not found in storage`, true);
+                        this.setLoadingState(false);
+                        return false;
+                    }
+                    
+                    const success = window.markRepairInProgress(code, notes);
+                    
+                    if (success) {
+                        this.logStatus(`🔧 Repair marked as started for ${code}`);
                         this.loadRepairs();
                         this.clearForm();
                         return true;
                     } else {
-                        this.logStatus(`❌ Failed to start repair: ${code}`, true);
+                        this.logStatus(`❌ Function returned false for ${code}`, true);
                         return false;
                     }
                 } catch (error) {
+                    console.error('Error in markRepairStart:', error);
                     this.logStatus(`❌ Error: ${error.message}`, true);
                     return false;
                 } finally {
@@ -522,23 +689,39 @@
                 const notes = this.getNotesArray();
                 
                 if (!code) {
-                    this.logStatus('Please enter a repair code', true);
+                    this.logStatus('❌ Please enter a repair code', true);
                     return false;
                 }
                 
+                if (!this.isConnected) {
+                    this.logStatus('❌ Systems not connected. Please refresh the page.', true);
+                    return false;
+                }
+                
+                console.log('🔄 Marking repair completed for:', code);
                 this.setLoadingState(true);
                 
                 try {
-                    if (window.markRepairCompleted && window.markRepairCompleted(code, notes)) {
-                        this.logStatus(`🎉 Repair completed: ${code}`);
+                    const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                    if (!bookings[code]) {
+                        this.logStatus(`❌ Repair ${code} not found in storage`, true);
+                        this.setLoadingState(false);
+                        return false;
+                    }
+                    
+                    const success = window.markRepairCompleted(code, notes);
+                    
+                    if (success) {
+                        this.logStatus(`🎉 Repair marked as completed for ${code}`);
                         this.loadRepairs();
                         this.clearForm();
                         return true;
                     } else {
-                        this.logStatus(`❌ Failed to complete: ${code}`, true);
+                        this.logStatus(`❌ Function returned false for ${code}`, true);
                         return false;
                     }
                 } catch (error) {
+                    console.error('Error in markRepairComplete:', error);
                     this.logStatus(`❌ Error: ${error.message}`, true);
                     return false;
                 } finally {
@@ -551,23 +734,38 @@
                 const notes = this.getNotesArray();
                 
                 if (!code) {
-                    this.logStatus('Please enter a repair code', true);
+                    this.logStatus('❌ Please enter a repair code', true);
+                    return false;
+                }
+                
+                if (!this.isConnected) {
+                    this.logStatus('❌ Systems not connected. Please refresh the page.', true);
                     return false;
                 }
                 
                 this.setLoadingState(true);
                 
                 try {
-                    if (window.updateRepairStatus && window.updateRepairStatus(code, 'Status Updated', notes)) {
-                        this.logStatus(`📝 Status updated: ${code}`);
+                    const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                    if (!bookings[code]) {
+                        this.logStatus(`❌ Repair ${code} not found in storage`, true);
+                        this.setLoadingState(false);
+                        return false;
+                    }
+                    
+                    const success = window.updateRepairStatus(code, 'Status Updated', notes);
+                    
+                    if (success) {
+                        this.logStatus(`📝 Status updated for ${code}`);
                         this.loadRepairs();
                         this.clearForm();
                         return true;
                     } else {
-                        this.logStatus(`❌ Failed to update: ${code}`, true);
+                        this.logStatus(`❌ Function returned false for ${code}`, true);
                         return false;
                     }
                 } catch (error) {
+                    console.error('Error in updateStatus:', error);
                     this.logStatus(`❌ Error: ${error.message}`, true);
                     return false;
                 } finally {
@@ -582,12 +780,16 @@
 
             clearForm() {
                 document.getElementById('statusNotes').value = '';
+                this.updateDebugInfo();
             }
 
             setLoadingState(loading) {
-                const buttons = document.querySelectorAll('.btn');
-                buttons.forEach(btn => {
-                    btn.disabled = loading;
+                const buttons = ['btnDiagnosis', 'btnRepairStart', 'btnRepairComplete', 'btnUpdate'];
+                buttons.forEach(btnId => {
+                    const btn = document.getElementById(btnId);
+                    if (btn) {
+                        btn.disabled = loading;
+                    }
                 });
             }
 
@@ -607,47 +809,65 @@
                 
                 log.insertBefore(update, log.firstChild);
                 
-                // Keep only last 10 messages
+                // Keep only last 15 messages
                 const messages = log.querySelectorAll('.status-update');
-                if (messages.length > 10) {
+                if (messages.length > 15) {
                     messages[messages.length - 1].remove();
                 }
+                
+                // Auto-scroll to top
+                log.scrollTop = 0;
+                
+                console.log(`📝 ${isError ? '❌' : '✅'} ${message}`);
             }
         }
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // Load systems.js
-            const script = document.createElement('script');
-            script.src = 'js/systems.js';
-            script.onload = function() {
-                window.admin = new SimpleAdmin();
-                console.log('🚀 Admin panel ready');
-                
-                // Check for bookings
-                setTimeout(() => {
-                    const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
-                    if (Object.keys(bookings).length === 0) {
-                        window.admin.logStatus('💡 Make a booking on the main website to test the system');
-                    }
-                }, 1000);
-            };
-            script.onerror = function() {
-                console.error('Failed to load systems.js');
-                document.getElementById('statusLog').innerHTML = `
-                    <div class="status-update error">
-                        <strong>Error:</strong> Could not load systems.js. Make sure the file exists.
-                    </div>
-                `;
-            };
-            document.head.appendChild(script);
+            window.admin = new SimpleAdmin();
         });
 
         // Global functions for buttons
-        function markDiagnosis() { window.admin?.markDiagnosis(); }
-        function markRepairStart() { window.admin?.markRepairStart(); }
-        function markRepairComplete() { window.admin?.markRepairComplete(); }
-        function updateStatus() { window.admin?.updateStatus(); }
+        function markDiagnosis() { 
+            if (window.admin) {
+                window.admin.markDiagnosis(); 
+            } else {
+                console.error('Admin not initialized');
+            }
+        }
+        
+        function markRepairStart() { 
+            if (window.admin) {
+                window.admin.markRepairStart(); 
+            } else {
+                console.error('Admin not initialized');
+            }
+        }
+        
+        function markRepairComplete() { 
+            if (window.admin) {
+                window.admin.markRepairComplete(); 
+            } else {
+                console.error('Admin not initialized');
+            }
+        }
+        
+        function updateStatus() { 
+            if (window.admin) {
+                window.admin.updateStatus(); 
+            } else {
+                console.error('Admin not initialized');
+            }
+        }
+
+        // Global function for manual testing
+        window.testAdmin = function(code) {
+            if (code) {
+                document.getElementById('repairCode').value = code;
+                window.admin.findRepair();
+            }
+            return window.admin;
+        };
     </script>
 </body>
 </html>
