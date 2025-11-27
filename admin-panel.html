@@ -3,290 +3,774 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusFix Admin - Repair Status Updates</title>
+    <title>CampusFix Admin - Repair Status Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ================================
+           ADMIN PANEL STYLES
+           ================================ */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
-            padding: 20px;
+            background: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: var(--space-md);
         }
-        
+
         .admin-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 30px;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            padding: var(--space-lg);
+            background: var(--gray-800);
+            border-radius: var(--radius-lg);
             border: 1px solid rgba(255,255,255,0.1);
         }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #6366f1;
+
+        .admin-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-sm);
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
+
+        .admin-header p {
+            color: var(--gray-400);
+            font-size: 1.1rem;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
         .admin-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            background: var(--gray-800);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        
+
         .admin-section h2 {
-            margin-bottom: 15px;
-            color: #f8fafc;
+            margin-bottom: var(--space-lg);
+            color: var(--light);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
-        
+
+        .admin-section h2 i {
+            color: var(--primary);
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: var(--space-md);
         }
-        
+
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: var(--space-sm);
             font-weight: 600;
+            color: var(--light);
         }
-        
+
         input, textarea, select {
             width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            color: #f8fafc;
-            font-size: 16px;
+            padding: var(--space-md);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            color: var(--light);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
         }
-        
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
         textarea {
-            height: 100px;
+            height: 120px;
             resize: vertical;
+            line-height: 1.5;
         }
-        
-        button {
-            background: #6366f1;
-            color: white;
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-lg);
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: var(--radius-md);
             font-weight: 600;
-            margin: 5px;
-            transition: background 0.3s;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-family: inherit;
         }
-        
-        button:hover {
-            background: #4f46e5;
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
         }
-        
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
         .btn-success {
-            background: #10b981;
+            background: var(--success);
+            color: white;
         }
-        
+
         .btn-success:hover {
             background: #059669;
+            transform: translateY(-2px);
         }
-        
+
         .btn-warning {
-            background: #f59e0b;
+            background: var(--warning);
+            color: white;
         }
-        
+
         .btn-warning:hover {
             background: #d97706;
+            transform: translateY(-2px);
         }
-        
-        .status-update {
-            background: rgba(16, 185, 129, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 4px solid #10b981;
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
         }
-        
+
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: 1fr;
+            gap: var(--space-sm);
+            margin: var(--space-lg) 0;
         }
-        
-        .repair-list {
+
+        .status-log {
             max-height: 300px;
             overflow-y: auto;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
         }
-        
+
+        .status-update {
+            background: rgba(16, 185, 129, 0.1);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-sm);
+            border-left: 4px solid var(--success);
+        }
+
+        .status-update.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left-color: var(--error);
+        }
+
+        .repair-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
         .repair-item {
             background: rgba(255,255,255,0.03);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 4px solid #6366f1;
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-sm);
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .repair-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+        }
+
+        .repair-item.active {
+            border-left-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .repair-code {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .repair-details {
+            color: var(--gray-400);
+            font-size: 0.9rem;
+            margin-top: var(--space-sm);
+        }
+
+        .progress-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: var(--space-sm);
+        }
+
+        .progress-badge.completed {
+            background: var(--success);
+        }
+
+        .progress-badge.progress {
+            background: var(--warning);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xl);
+            color: var(--gray-400);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: var(--space-md);
+            color: var(--gray-600);
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .btn-loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-sm);
+            }
+            
+            .admin-header {
+                padding: var(--space-md);
+                margin-bottom: var(--space-lg);
+            }
+            
+            .admin-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .admin-section {
+                padding: var(--space-md);
+            }
+            
+            .admin-section h2 {
+                font-size: 1.25rem;
+            }
+            
+            .btn {
+                padding: var(--space-sm) var(--space-md);
+                font-size: 0.9rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .admin-section h2 {
+                font-size: 1.1rem;
+            }
+            
+            input, textarea, select {
+                padding: var(--space-sm);
+            }
+            
+            .repair-item {
+                padding: var(--space-sm);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
         }
     </style>
 </head>
 <body>
     <div class="admin-container">
-        <h1>🔧 CampusFix Repair Status Admin</h1>
-        
-        <div class="admin-section">
-            <h2>Update Repair Status</h2>
-            <div class="form-group">
-                <label for="repairCode">Repair Code:</label>
-                <input type="text" id="repairCode" placeholder="e.g., CF-2024-0001">
+        <header class="admin-header">
+            <h1><i class="fas fa-tools"></i> CampusFix Repair Manager</h1>
+            <p>Update repair status and track customer devices</p>
+        </header>
+
+        <div class="admin-grid">
+            <!-- Left Column -->
+            <div class="admin-column">
+                <section class="admin-section">
+                    <h2><i class="fas fa-edit"></i> Update Repair Status</h2>
+                    
+                    <div class="form-group">
+                        <label for="repairCode"><i class="fas fa-barcode"></i> Repair Code</label>
+                        <input type="text" id="repairCode" placeholder="Enter repair code (e.g., CF-2024-0001)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="statusNotes"><i class="fas fa-sticky-note"></i> Technician Notes</label>
+                        <textarea id="statusNotes" placeholder="Add repair notes for the customer..."></textarea>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button onclick="markDiagnosis()" class="btn btn-success btn-full">
+                            <i class="fas fa-search"></i> Mark Diagnosis Complete
+                        </button>
+                        <button onclick="markRepairStart()" class="btn btn-warning btn-full">
+                            <i class="fas fa-tools"></i> Mark Repair Started
+                        </button>
+                        <button onclick="markRepairComplete()" class="btn btn-success btn-full">
+                            <i class="fas fa-check-circle"></i> Mark Repair Completed
+                        </button>
+                    </div>
+
+                    <button onclick="updateStatus()" class="btn btn-primary btn-full">
+                        <i class="fas fa-sync-alt"></i> Update Status
+                    </button>
+                </section>
+
+                <section class="admin-section">
+                    <h2><i class="fas fa-history"></i> Status Update Log</h2>
+                    <div id="statusLog" class="status-log">
+                        <div class="empty-state">
+                            <i class="fas fa-clock"></i>
+                            <p>No status updates yet</p>
+                        </div>
+                    </div>
+                </section>
             </div>
-            
-            <div class="quick-actions">
-                <button onclick="markDiagnosis()" class="btn-success">Mark Diagnosis Complete</button>
-                <button onclick="markRepairStart()" class="btn-warning">Mark Repair Started</button>
-                <button onclick="markRepairComplete()" class="btn-success">Mark Repair Completed</button>
-            </div>
-            
-            <div class="form-group">
-                <label for="statusNotes">Technician Notes:</label>
-                <textarea id="statusNotes" placeholder="Add any notes about the repair..."></textarea>
-            </div>
-            
-            <button onclick="updateStatus()">Update Status</button>
-        </div>
-        
-        <div class="admin-section">
-            <h2>Current Repairs</h2>
-            <div id="repairList" class="repair-list">
-                <!-- Repairs will be listed here -->
-            </div>
-        </div>
-        
-        <div class="admin-section">
-            <h2>Status Update Log</h2>
-            <div id="statusLog">
-                <!-- Status updates will be shown here -->
+
+            <!-- Right Column -->
+            <div class="admin-column">
+                <section class="admin-section">
+                    <h2><i class="fas fa-list"></i> Current Repairs</h2>
+                    <div id="repairList" class="repair-list">
+                        <div class="empty-state">
+                            <i class="fas fa-mobile-alt"></i>
+                            <p>No active repairs found</p>
+                            <p class="repair-details">Bookings will appear here after customers submit repair requests</p>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
 
     <script>
-        // Load systems.js first
-        function loadScript(src) {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
+        // Admin Panel JavaScript
+        class CampusFixAdmin {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.loadRepairs();
+                this.setupEventListeners();
+                console.log('🔧 Admin panel initialized');
+            }
+
+            loadRepairs() {
+                try {
+                    const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                    const repairList = document.getElementById('repairList');
+                    
+                    repairList.innerHTML = '';
+                    
+                    if (Object.keys(bookings).length === 0) {
+                        repairList.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-mobile-alt"></i>
+                                <p>No active repairs found</p>
+                                <p class="repair-details">Bookings will appear here after customers submit repair requests</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    Object.values(bookings).forEach(booking => {
+                        const progressClass = booking.progress === 100 ? 'completed' : 'progress';
+                        const repairItem = document.createElement('div');
+                        repairItem.className = 'repair-item';
+                        repairItem.innerHTML = `
+                            <div class="repair-code">${booking.code}</div>
+                            <div class="repair-details">
+                                <strong>${booking.device}</strong><br>
+                                Customer: ${booking.name}<br>
+                                Status: ${booking.status} 
+                                <span class="progress-badge ${progressClass}">${booking.progress}%</span>
+                            </div>
+                        `;
+                        repairItem.onclick = () => {
+                            // Remove active class from all items
+                            document.querySelectorAll('.repair-item').forEach(item => {
+                                item.classList.remove('active');
+                            });
+                            // Add active class to clicked item
+                            repairItem.classList.add('active');
+                            // Fill the repair code
+                            document.getElementById('repairCode').value = booking.code;
+                        };
+                        repairList.appendChild(repairItem);
+                    });
+                } catch (error) {
+                    console.error('Error loading repairs:', error);
+                    this.logStatus('Error loading repairs: ' + error.message, true);
+                }
+            }
+
+            setupEventListeners() {
+                // Enter key support for repair code
+                document.getElementById('repairCode').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.findRepair();
+                    }
+                });
+
+                // Auto-save notes
+                document.getElementById('statusNotes').addEventListener('blur', () => {
+                    this.saveDraftNotes();
+                });
+            }
+
+            findRepair() {
+                const code = document.getElementById('repairCode').value.trim().toUpperCase();
+                if (!code) return;
+
+                const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                const booking = bookings[code];
+                
+                if (booking) {
+                    // Highlight the repair in the list
+                    document.querySelectorAll('.repair-item').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.querySelector('.repair-code').textContent === code) {
+                            item.classList.add('active');
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                    
+                    this.logStatus(`Found repair: ${code} - ${booking.device}`);
+                } else {
+                    this.logStatus(`Repair not found: ${code}`, true);
+                }
+            }
+
+            saveDraftNotes() {
+                const code = document.getElementById('repairCode').value;
+                const notes = document.getElementById('statusNotes').value;
+                
+                if (code && notes) {
+                    localStorage.setItem(`draft_notes_${code}`, notes);
+                }
+            }
+
+            loadDraftNotes(code) {
+                const draftNotes = localStorage.getItem(`draft_notes_${code}`);
+                if (draftNotes) {
+                    document.getElementById('statusNotes').value = draftNotes;
+                }
+            }
+
+            markDiagnosis() {
+                const code = document.getElementById('repairCode').value.trim().toUpperCase();
+                const notes = this.getNotesArray();
+                
+                if (!code) {
+                    this.logStatus('Please enter a repair code', true);
+                    return false;
+                }
+                
+                this.setLoadingState(true);
+                
+                try {
+                    if (window.markDiagnosisComplete && window.markDiagnosisComplete(code, notes)) {
+                        this.logStatus(`✅ Diagnosis marked complete for ${code}`);
+                        this.loadRepairs();
+                        this.clearForm();
+                        return true;
+                    } else {
+                        this.logStatus(`❌ Failed to update diagnosis for ${code}`, true);
+                        return false;
+                    }
+                } catch (error) {
+                    this.logStatus(`❌ Error: ${error.message}`, true);
+                    return false;
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            markRepairStart() {
+                const code = document.getElementById('repairCode').value.trim().toUpperCase();
+                const notes = this.getNotesArray();
+                
+                if (!code) {
+                    this.logStatus('Please enter a repair code', true);
+                    return false;
+                }
+                
+                this.setLoadingState(true);
+                
+                try {
+                    if (window.markRepairInProgress && window.markRepairInProgress(code, notes)) {
+                        this.logStatus(`🔧 Repair marked as in progress for ${code}`);
+                        this.loadRepairs();
+                        this.clearForm();
+                        return true;
+                    } else {
+                        this.logStatus(`❌ Failed to start repair for ${code}`, true);
+                        return false;
+                    }
+                } catch (error) {
+                    this.logStatus(`❌ Error: ${error.message}`, true);
+                    return false;
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            markRepairComplete() {
+                const code = document.getElementById('repairCode').value.trim().toUpperCase();
+                const notes = this.getNotesArray();
+                
+                if (!code) {
+                    this.logStatus('Please enter a repair code', true);
+                    return false;
+                }
+                
+                this.setLoadingState(true);
+                
+                try {
+                    if (window.markRepairCompleted && window.markRepairCompleted(code, notes)) {
+                        this.logStatus(`🎉 Repair marked as completed for ${code}`);
+                        this.loadRepairs();
+                        this.clearForm();
+                        return true;
+                    } else {
+                        this.logStatus(`❌ Failed to complete repair for ${code}`, true);
+                        return false;
+                    }
+                } catch (error) {
+                    this.logStatus(`❌ Error: ${error.message}`, true);
+                    return false;
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            updateStatus() {
+                const code = document.getElementById('repairCode').value.trim().toUpperCase();
+                const notes = this.getNotesArray();
+                
+                if (!code) {
+                    this.logStatus('Please enter a repair code', true);
+                    return false;
+                }
+                
+                this.setLoadingState(true);
+                
+                try {
+                    if (window.updateRepairStatus && window.updateRepairStatus(code, 'Status Updated', notes)) {
+                        this.logStatus(`📝 Status updated for ${code}`);
+                        this.loadRepairs();
+                        this.clearForm();
+                        return true;
+                    } else {
+                        this.logStatus(`❌ Failed to update status for ${code}`, true);
+                        return false;
+                    }
+                } catch (error) {
+                    this.logStatus(`❌ Error: ${error.message}`, true);
+                    return false;
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            getNotesArray() {
+                const notesText = document.getElementById('statusNotes').value;
+                return notesText.split('\n')
+                    .filter(note => note.trim())
+                    .map(note => note.trim());
+            }
+
+            clearForm() {
+                document.getElementById('statusNotes').value = '';
+                localStorage.removeItem(`draft_notes_${document.getElementById('repairCode').value}`);
+            }
+
+            setLoadingState(loading) {
+                const buttons = document.querySelectorAll('.btn');
+                buttons.forEach(btn => {
+                    if (loading) {
+                        btn.classList.add('loading');
+                    } else {
+                        btn.classList.remove('loading');
+                    }
+                });
+            }
+
+            logStatus(message, isError = false) {
+                const log = document.getElementById('statusLog');
+                const update = document.createElement('div');
+                update.className = `status-update ${isError ? 'error' : ''}`;
+                
+                const timestamp = new Date().toLocaleTimeString();
+                update.innerHTML = `
+                    <strong>${timestamp}</strong> - ${message}
+                `;
+                
+                // Remove empty state if it exists
+                const emptyState = log.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+                
+                log.insertBefore(update, log.firstChild);
+                
+                // Keep only last 20 messages
+                const messages = log.querySelectorAll('.status-update');
+                if (messages.length > 20) {
+                    messages[messages.length - 1].remove();
+                }
+                
+                // Auto-scroll to top
+                log.scrollTop = 0;
+            }
         }
 
-        // Initialize admin panel after systems.js loads
-        loadScript('js/systems.js').then(() => {
-            console.log('Admin panel initialized');
-            loadRepairs();
+        // Initialize admin panel when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load systems.js first
+            const script = document.createElement('script');
+            script.src = 'js/systems.js';
+            script.onload = function() {
+                window.adminPanel = new CampusFixAdmin();
+                console.log('🚀 Admin panel ready');
+                
+                // Load demo repairs if none exist
+                setTimeout(() => {
+                    const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
+                    if (Object.keys(bookings).length === 0) {
+                        window.adminPanel.logStatus('💡 Tip: Make some test bookings on the main website to see repairs here');
+                    }
+                }, 1000);
+            };
+            script.onerror = function() {
+                console.error('Failed to load systems.js');
+                window.adminPanel.logStatus('❌ Error: Could not load systems.js. Make sure the file exists.', true);
+            };
+            document.head.appendChild(script);
         });
 
-        function loadRepairs() {
-            const bookings = JSON.parse(localStorage.getItem('campusFixBookings') || '{}');
-            const repairList = document.getElementById('repairList');
-            
-            repairList.innerHTML = '';
-            
-            if (Object.keys(bookings).length === 0) {
-                repairList.innerHTML = '<p>No repairs found</p>';
-                return;
-            }
-            
-            Object.values(bookings).forEach(booking => {
-                const repairItem = document.createElement('div');
-                repairItem.className = 'repair-item';
-                repairItem.innerHTML = `
-                    <strong>${booking.code}</strong> - ${booking.device}
-                    <br><small>Status: ${booking.status} | Progress: ${booking.progress}%</small>
-                    <br><small>Customer: ${booking.name}</small>
-                `;
-                repairItem.onclick = () => {
-                    document.getElementById('repairCode').value = booking.code;
-                };
-                repairList.appendChild(repairItem);
-            });
-        }
-
-        function markDiagnosis() {
-            const code = document.getElementById('repairCode').value;
-            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
-            
-            if (!code) {
-                alert('Please enter a repair code');
-                return;
-            }
-            
-            if (window.markDiagnosisComplete(code, notes)) {
-                logStatus(`Diagnosis marked complete for ${code}`);
-                loadRepairs();
-                document.getElementById('statusNotes').value = '';
-            }
-        }
-
-        function markRepairStart() {
-            const code = document.getElementById('repairCode').value;
-            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
-            
-            if (!code) {
-                alert('Please enter a repair code');
-                return;
-            }
-            
-            if (window.markRepairInProgress(code, notes)) {
-                logStatus(`Repair marked as in progress for ${code}`);
-                loadRepairs();
-                document.getElementById('statusNotes').value = '';
-            }
-        }
-
-        function markRepairComplete() {
-            const code = document.getElementById('repairCode').value;
-            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
-            
-            if (!code) {
-                alert('Please enter a repair code');
-                return;
-            }
-            
-            if (window.markRepairCompleted(code, notes)) {
-                logStatus(`Repair marked as completed for ${code}`);
-                loadRepairs();
-                document.getElementById('statusNotes').value = '';
-            }
-        }
-
-        function updateStatus() {
-            const code = document.getElementById('repairCode').value;
-            const notes = document.getElementById('statusNotes').value.split('\n').filter(note => note.trim());
-            
-            if (!code) {
-                alert('Please enter a repair code');
-                return;
-            }
-            
-            // Simple status update
-            if (window.updateRepairStatus(code, 'Updated', notes)) {
-                logStatus(`Status updated for ${code}`);
-                loadRepairs();
-                document.getElementById('statusNotes').value = '';
-            }
-        }
-
-        function logStatus(message) {
-            const log = document.getElementById('statusLog');
-            const update = document.createElement('div');
-            update.className = 'status-update';
-            update.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
-            log.insertBefore(update, log.firstChild);
-        }
+        // Global functions for buttons
+        function markDiagnosis() { window.adminPanel?.markDiagnosis(); }
+        function markRepairStart() { window.adminPanel?.markRepairStart(); }
+        function markRepairComplete() { window.adminPanel?.markRepairComplete(); }
+        function updateStatus() { window.adminPanel?.updateStatus(); }
     </script>
 </body>
 </html>
